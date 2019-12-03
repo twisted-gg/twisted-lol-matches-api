@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class LolMatchesApplication
 
 fun main(args: Array<String>) {
-	runApplication<LolMatchesApplication>(*args)
+  runApplication<LolMatchesApplication>(*args)
 }

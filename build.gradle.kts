@@ -12,10 +12,12 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
+	maven ("https://jitpack.io")
 	mavenCentral()
 }
 
 dependencies {
+	implementation("com.github.taycaldwell:riot-api-java:4.3.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

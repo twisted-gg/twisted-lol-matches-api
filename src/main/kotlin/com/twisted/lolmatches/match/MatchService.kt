@@ -15,7 +15,7 @@ class MatchService(
 
   fun getSummonerMatches(params: GetSummonerDto): MatchList {
     val summoner = summonerService.getSummoner(params)
-    var region = riotApi.parseRegion(params.region)
+    val region = riotApi.parseRegion(params.region)
     return api.getMatchListByAccountId(region, summoner.accountId)
   }
 }

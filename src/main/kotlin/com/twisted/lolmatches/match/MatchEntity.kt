@@ -9,6 +9,10 @@ import java.util.*
 
 @Document(collection = "lol_matches")
 data class MatchDocument(
+        // Mongo fields
+        @Id
+        private val id: String = "",
+        // Match details
         private val region: Platform,
         private val game_id: Long,
         private val creation: Date,
@@ -18,10 +22,11 @@ data class MatchDocument(
         private val map_id: Int,
         private val queue: Int,
         private val season: Int,
-        @Id
-        private val id: String = ""
+        // Timestamps
+        private val createdAt: Date = Date(),
+        private val updatedAt: Date = Date()
 )
 
 @Repository
-interface MatchRepository : MongoRepository<MatchDocument, Long> {
+interface MatchRepository : MongoRepository<MatchDocument, String> {
 }

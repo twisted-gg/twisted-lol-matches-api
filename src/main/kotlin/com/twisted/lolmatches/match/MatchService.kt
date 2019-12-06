@@ -7,6 +7,7 @@ import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.constant.Platform
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class MatchService(
@@ -23,10 +24,11 @@ class MatchService(
   }
 
   private fun matchToDocument(match: Match, region: Platform): MatchDocument {
+    val gameCreation = Date(match.gameCreation)
     return MatchDocument(
             region = region,
             game_id = match.gameId,
-            creation = match.gameCreation,
+            creation = gameCreation,
             mode = match.gameMode,
             type = match.gameType,
             version = match.gameVersion,

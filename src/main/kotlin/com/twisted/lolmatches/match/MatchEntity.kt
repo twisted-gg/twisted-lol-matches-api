@@ -1,6 +1,6 @@
 package com.twisted.lolmatches.match
 
-import com.twisted.lolmatches.dto.ListRegions
+import net.rithms.riot.constant.Platform
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -8,9 +8,15 @@ import org.springframework.stereotype.Repository
 
 @Document(collection = "lol_matches")
 data class MatchDocument(
-        private val region: ListRegions,
-        private val game_creation: Long,
+        private val region: Platform,
         private val game_id: Long,
+        private val creation: Long,
+        private val mode: String,
+        private val type: String,
+        private val version: String,
+        private val map_id: Int,
+        private val queue: Int,
+        private val season: Int,
         @Id
         private val id: String = ""
 )

@@ -1,11 +1,9 @@
 package com.twisted.lolmatches.match
 
 import com.twisted.lolmatches.dto.GetSummonerDto
-import com.twisted.lolmatches.dto.ListRegions
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 import net.rithms.riot.api.endpoints.match.dto.Match
-import net.rithms.riot.api.endpoints.match.dto.MatchReference
 import net.rithms.riot.constant.Platform
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -19,14 +17,22 @@ class MatchService(
   private val api = riotApi.getApi()
 
   private fun matchDetails(region: Platform, matchId: Long): Match {
-    return api.getMatch(region, matchId)
+    val match = api.getMatch(region, matchId)
+    repository.save(matchToDocument(match, region))
+    return match
   }
 
-  private fun matchToDocument(match: MatchReference, region: ListRegions): MatchDocument {
+  private fun matchToDocument(match: Match, region: Platform): MatchDocument {
     return MatchDocument(
-            game_creation = match.timestamp,
+            region = region,
             game_id = match.gameId,
-            region = region
+            creation = match.gameCreation,
+            mode = match.gameMode,
+            type = match.gameType,
+            version = match.gameVersion,
+            map_id = match.mapId,
+            queue = match.queueId,
+            season = match.seasonId
     )
   }
 
@@ -34,7 +40,6 @@ class MatchService(
     val summoner = summonerService.getSummoner(params)
     val region = riotApi.parseRegion(params.region)
     val matchList = api.getMatchListByAccountId(region, summoner.accountId).matches
-    repository.save(matchToDocument(matchList[0], params.region))
     return matchDetails(region, matchList[0].gameId)
   }
 }

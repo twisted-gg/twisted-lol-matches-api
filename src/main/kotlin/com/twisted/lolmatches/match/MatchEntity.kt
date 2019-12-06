@@ -1,6 +1,5 @@
 package com.twisted.lolmatches.match
 
-import net.rithms.riot.constant.Platform
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -13,7 +12,7 @@ data class MatchDocument(
         @Id
         private val id: String = "",
         // Match details
-        private val region: Platform,
+        private val region: String,
         private val game_id: Long,
         private val creation: Date,
         private val mode: String,

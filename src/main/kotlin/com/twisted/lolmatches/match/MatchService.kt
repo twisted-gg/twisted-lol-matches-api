@@ -19,14 +19,14 @@ class MatchService(
 
   private fun matchDetails(region: Platform, matchId: Long): Match {
     val match = api.getMatch(region, matchId)
-    repository.save(matchToDocument(match, region))
+    repository.save(matchToDocument(match))
     return match
   }
 
-  private fun matchToDocument(match: Match, region: Platform): MatchDocument {
+  private fun matchToDocument(match: Match): MatchDocument {
     val gameCreation = Date(match.gameCreation)
     return MatchDocument(
-            region = region,
+            region = match.platformId,
             game_id = match.gameId,
             creation = gameCreation,
             mode = match.gameMode,

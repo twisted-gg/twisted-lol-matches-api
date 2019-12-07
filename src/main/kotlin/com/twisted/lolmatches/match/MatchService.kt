@@ -1,9 +1,9 @@
 package com.twisted.lolmatches.match
 
-import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import com.twisted.lolmatches.entity.match.MatchRepository
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
+import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.constant.Platform
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +19,8 @@ class MatchService(
 
   private fun matchDetails(region: Platform, matchId: Long): Match {
     val match = api.getMatch(region, matchId)
+    // TODO
+    val matchFrames = api.getTimelineByMatchId(region, match.gameId)
     repository.save(matchToDocument(match))
     return match
   }
@@ -27,6 +29,6 @@ class MatchService(
     val summoner = summonerService.getSummoner(params)
     val region = riotApi.parseRegion(params.region)
     val matchList = api.getMatchListByAccountId(region, summoner.accountId).matches
-    return matchDetails(region, matchList[1].gameId)
+    return matchDetails(region, matchList[0].gameId)
   }
 }

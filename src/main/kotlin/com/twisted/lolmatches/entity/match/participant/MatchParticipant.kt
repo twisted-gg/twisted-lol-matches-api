@@ -1,16 +1,14 @@
 package com.twisted.lolmatches.entity.match.participant
 
-import com.twisted.lolmatches.summoners.dto.SummonerDto
-
 data class MatchParticipant(
-        val summoner: SummonerDto,
+        val summoner: MatchParticipantSummoner,
         val championId: Int,
         val spell1Id: Int,
         val spell2Id: Int,
         val teamId: Int,
         val kda: MatchParticipantKDA,
         val stats: MatchParticipantStats,
-        val timeline: MatchParticipantTimeline,
+        val stats_timeline: MatchParticipantTimeline,
         val items: MatchParticipantItems,
         val perks: MatchParticipantPerks
 )

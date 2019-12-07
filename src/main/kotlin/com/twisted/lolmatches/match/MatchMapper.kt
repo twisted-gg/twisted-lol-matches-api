@@ -1,13 +1,14 @@
 package com.twisted.lolmatches.match
 
-import com.twisted.lolmatches.summoners.dto.GetSummonerDto
-import com.twisted.lolmatches.summoners.dto.ListRegions
 import com.twisted.lolmatches.entity.match.MatchDocument
 import com.twisted.lolmatches.entity.match.participant.*
 import com.twisted.lolmatches.entity.match.team.MatchTeam
 import com.twisted.lolmatches.entity.match.team.MatchTeamBans
 import com.twisted.lolmatches.entity.match.team.MatchTeamStats
 import com.twisted.lolmatches.summoners.SummonersService
+import com.twisted.lolmatches.summoners.dto.GetSummonerDto
+import com.twisted.lolmatches.summoners.dto.ListRegions
+import com.twisted.lolmatches.summoners.dto.SummonerDto
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.api.endpoints.match.dto.ParticipantStats
 import net.rithms.riot.api.endpoints.match.dto.ParticipantTimeline
@@ -254,6 +255,18 @@ private fun participantKDA(stats: ParticipantStats): MatchParticipantKDA {
 }
 
 /**
+ * Only save summoner details
+ */
+private fun mapSummoner(summoner: SummonerDto): MatchParticipantSummoner {
+  return MatchParticipantSummoner(
+          _id = ObjectId(summoner._id),
+          name = summoner.name,
+          puuid = summoner.puuid,
+          level = summoner.summonerLevel
+  )
+}
+
+/**
  * Get match participants
  */
 private fun getParticipants(match: Match): List<MatchParticipant> {
@@ -263,19 +276,19 @@ private fun getParticipants(match: Match): List<MatchParticipant> {
       val params = GetSummonerDto(
               region = ListRegions.valueOf(match.platformId),
               summonerName = participant.player.summonerName,
-              accountID = participant.player.accountId
+              accountID = participant.player.currentAccountId
       )
       val summoner = summonersService.getSummoner(params)
       val info = match.participants.find { p -> p.participantId == participant.participantId }
               ?: throw Exception()
       response.add(MatchParticipant(
-              summoner = summoner,
+              summoner = mapSummoner(summoner),
               championId = info.championId,
               spell1Id = info.spell1Id,
               spell2Id = info.spell2Id,
               teamId = info.teamId,
               stats = participantStats(info.stats),
-              timeline = participantTimeline(info.timeline),
+              stats_timeline = participantTimeline(info.timeline),
               items = participantItems(info.stats),
               perks = participantPerks(info.stats),
               kda = participantKDA(info.stats)
@@ -293,7 +306,7 @@ private fun getParticipants(match: Match): List<MatchParticipant> {
  */
 fun matchToDocument(match: Match): MatchDocument {
   val participants = getParticipants(match)
-  val participantsIds = participants.map { p -> ObjectId(p.summoner._id) }
+  val participantsIds = participants.map { p -> p.summoner._id }
   val badMatch = participants.count() == 0
   return MatchDocument(
           region = match.platformId,

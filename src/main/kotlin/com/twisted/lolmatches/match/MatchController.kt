@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("match")
-open class MatchController(
+class MatchController(
         private val service: MatchService
 ) {
   @GetMapping

@@ -5,11 +5,9 @@ import net.rithms.riot.api.ApiConfig
 import net.rithms.riot.api.RiotApi
 import net.rithms.riot.constant.Platform
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
 
 @Component
 class RiotService {
-  private val rest = RestTemplate()
   private val apiKey = System.getenv("API_KEY") ?: ""
 
   fun parseRegion(value: ListRegions): Platform {

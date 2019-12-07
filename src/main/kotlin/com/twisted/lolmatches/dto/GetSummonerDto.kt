@@ -6,5 +6,6 @@ enum class ListRegions {
 
 data class GetSummonerDto(
         val summonerName: String,
+        val accountID: String = "",
         val region: ListRegions
 )

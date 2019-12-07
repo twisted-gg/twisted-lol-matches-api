@@ -8,7 +8,6 @@ data class SummonerDto(
         val name: String,
         val profileIconId: Int,
         val summonerLevel: Int,
-        val id: String,
         val puuid: String,
         val accountId: String,
         val loading: Boolean,

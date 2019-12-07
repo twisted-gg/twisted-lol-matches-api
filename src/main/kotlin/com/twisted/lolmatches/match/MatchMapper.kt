@@ -1,12 +1,23 @@
 package com.twisted.lolmatches.match
 
+import com.twisted.lolmatches.dto.GetSummonerDto
+import com.twisted.lolmatches.dto.ListRegions
 import com.twisted.lolmatches.entity.match.MatchDocument
+import com.twisted.lolmatches.entity.match.participant.MatchParticipant
+import com.twisted.lolmatches.entity.match.participant.MatchParticipantStats
+import com.twisted.lolmatches.entity.match.participant.MatchParticipantTimeline
 import com.twisted.lolmatches.entity.match.team.MatchTeam
 import com.twisted.lolmatches.entity.match.team.MatchTeamBans
 import com.twisted.lolmatches.entity.match.team.MatchTeamStats
+import com.twisted.lolmatches.summoners.SummonersService
 import net.rithms.riot.api.endpoints.match.dto.Match
+import net.rithms.riot.api.endpoints.match.dto.ParticipantStats
+import net.rithms.riot.api.endpoints.match.dto.ParticipantTimeline
 import net.rithms.riot.api.endpoints.match.dto.TeamStats
+import org.bson.types.ObjectId
 import java.util.*
+
+private val summonersService = SummonersService()
 
 private fun isWin(value: String): Boolean {
   val condition = "Win"
@@ -82,21 +93,195 @@ private fun isRemake(match: Match): Boolean {
 }
 
 /**
+ * Participant timeline
+ * Convert riot response to required document
+ */
+private fun participantTimeline(timeline: ParticipantTimeline): MatchParticipantTimeline {
+  return MatchParticipantTimeline(
+          lane = timeline.lane,
+          role = timeline.role,
+          csDiffPerMinDeltas = timeline.csDiffPerMinDeltas,
+          creepsPerMinDeltas = timeline.creepsPerMinDeltas,
+          damageTakenDiffPerMinDeltas = timeline.damageTakenDiffPerMinDeltas,
+          damageTakenPerMinDeltas = timeline.damageTakenPerMinDeltas,
+          goldPerMinDeltas = timeline.goldPerMinDeltas,
+          xpDiffPerMinDeltas = timeline.xpDiffPerMinDeltas,
+          xpPerMinDeltas = timeline.xpPerMinDeltas
+  )
+}
+
+/**
+ * Extract participant stats
+ */
+private fun participantStats(stats: ParticipantStats): MatchParticipantStats {
+  return MatchParticipantStats(
+          altarsCaptured = stats.altarsCaptured,
+          altarsNeutralized = stats.altarsNeutralized,
+          assists = stats.assists,
+          champLevel = stats.champLevel,
+          combatPlayerScore = stats.combatPlayerScore,
+          damageDealtToObjectives = stats.damageDealtToObjectives,
+          damageDealtToTurrets = stats.damageDealtToTurrets,
+          damageSelfMitigated = stats.damageSelfMitigated,
+          deaths = stats.deaths,
+          doubleKills = stats.doubleKills,
+          firstBloodAssist = stats.isFirstBloodAssist,
+          firstBloodKill = stats.isFirstBloodKill,
+          firstInhibitorAssist = stats.isFirstInhibitorAssist,
+          firstInhibitorKill = stats.isFirstInhibitorKill,
+          firstTowerAssist = stats.isFirstTowerAssist,
+          firstTowerKill = stats.isFirstTowerKill,
+          goldEarned = stats.goldEarned,
+          goldSpent = stats.goldSpent,
+          inhibitorKills = stats.inhibitorKills,
+          item0 = stats.item0,
+          item1 = stats.item1,
+          item2 = stats.item2,
+          item3 = stats.item3,
+          item4 = stats.item4,
+          item5 = stats.item5,
+          item6 = stats.item6,
+          killingSprees = stats.killingSprees,
+          kills = stats.kills,
+          largestCriticalStrike = stats.largestCriticalStrike,
+          largestKillingSpree = stats.largestKillingSpree,
+          largestMultiKill = stats.largestMultiKill,
+          longestTimeSpentLiving = stats.longestTimeSpentLiving,
+          magicDamageDealt = stats.magicDamageDealt,
+          magicDamageDealtToChampions = stats.magicDamageDealtToChampions,
+          magicalDamageTaken = stats.magicalDamageTaken,
+          neutralMinionsKilled = stats.neutralMinionsKilled,
+          neutralMinionsKilledEnemyJungle = stats.neutralMinionsKilledEnemyJungle,
+          neutralMinionsKilledTeamJungle = stats.neutralMinionsKilledTeamJungle,
+          nodeCapture = stats.nodeCapture,
+          nodeCaptureAssist = stats.nodeCaptureAssist,
+          nodeNeutralize = stats.nodeNeutralize,
+          nodeNeutralizeAssist = stats.nodeNeutralizeAssist,
+          objectivePlayerScore = stats.objectivePlayerScore,
+          participantId = stats.participantId,
+          pentaKills = stats.pentaKills,
+          physicalDamageDealt = stats.physicalDamageDealt,
+          physicalDamageDealtToChampions = stats.physicalDamageDealtToChampions,
+          physicalDamageTaken = stats.physicalDamageTaken,
+          quadraKills = stats.quadraKills,
+          sightWardsBoughtInGame = stats.sightWardsBoughtInGame,
+          teamObjective = stats.teamObjective,
+          timeCCingOthers = stats.timeCCingOthers.toLong(),
+          totalDamageDealt = stats.totalDamageDealt,
+          totalDamageDealtToChampions = stats.totalDamageDealtToChampions,
+          totalDamageTaken = stats.totalDamageTaken,
+          totalHeal = stats.totalHeal,
+          totalMinionsKilled = stats.totalMinionsKilled,
+          totalPlayerScore = stats.totalPlayerScore,
+          totalScoreRank = stats.totalScoreRank,
+          totalTimeCrowdControlDealt = stats.totalTimeCrowdControlDealt,
+          totalUnitsHealed = stats.totalUnitsHealed,
+          tripleKills = stats.tripleKills,
+          trueDamageDealt = stats.trueDamageDealt,
+          trueDamageDealtToChampions = stats.trueDamageDealtToChampions,
+          trueDamageTaken = stats.trueDamageTaken,
+          turretKills = stats.turretKills,
+          unrealKills = stats.unrealKills,
+          visionScore = stats.visionScore,
+          visionWardsBoughtInGame = stats.visionWardsBoughtInGame,
+          wardsKilled = stats.wardsKilled,
+          wardsPlaced = stats.wardsPlaced,
+          perk0 = stats.perk0,
+          perk1 = stats.perk1,
+          perk2 = stats.perk2,
+          perk3 = stats.perk3,
+          perk4 = stats.perk4,
+          perk5 = stats.perk5,
+          perk0Var1 = stats.perk0Var1.toInt(),
+          perk0Var2 = stats.perk0Var2.toInt(),
+          perk0Var3 = stats.perk0Var3.toInt(),
+          perk1Var1 = stats.perk1Var1.toInt(),
+          perk1Var2 = stats.perk1Var2.toInt(),
+          perk1Var3 = stats.perk1Var3.toInt(),
+          perk2Var1 = stats.perk2Var1.toInt(),
+          perk2Var2 = stats.perk2Var2.toInt(),
+          perk2Var3 = stats.perk2Var3.toInt(),
+          perk3Var1 = stats.perk3Var1.toInt(),
+          perk3Var2 = stats.perk3Var2.toInt(),
+          perk3Var3 = stats.perk3Var3.toInt(),
+          perk4Var1 = stats.perk4Var1.toInt(),
+          perk4Var2 = stats.perk4Var2.toInt(),
+          perk4Var3 = stats.perk4Var3.toInt(),
+          perk5Var1 = stats.perk5Var1.toInt(),
+          perk5Var2 = stats.perk5Var2.toInt(),
+          perk5Var3 = stats.perk5Var3.toInt(),
+          playerScore0 = stats.playerScore0.toInt(),
+          playerScore1 = stats.playerScore1.toInt(),
+          playerScore2 = stats.playerScore2.toInt(),
+          playerScore3 = stats.playerScore3.toInt(),
+          playerScore4 = stats.playerScore4.toInt(),
+          playerScore5 = stats.playerScore5.toInt(),
+          playerScore6 = stats.playerScore6.toInt(),
+          playerScore7 = stats.playerScore7.toInt(),
+          playerScore8 = stats.playerScore8.toInt(),
+          playerScore9 = stats.playerScore9.toInt(),
+          perkPrimaryStyle = stats.perkPrimaryStyle,
+          perkSubStyle = stats.perkSubStyle,
+          statPerk0 = stats.statPerk0,
+          statPerk1 = stats.statPerk1,
+          statPerk2 = stats.statPerk2
+  )
+}
+
+/**
+ * Get match participants
+ */
+private fun getParticipants(match: Match): List<MatchParticipant> {
+  return try {
+    val response = mutableListOf<MatchParticipant>()
+    for (participant in match.participantIdentities) {
+      val params = GetSummonerDto(
+              region = ListRegions.valueOf(match.platformId),
+              summonerName = participant.player.summonerName,
+              accountID = participant.player.accountId
+      )
+      val summoner = summonersService.getSummoner(params)
+      val info = match.participants.find { p -> p.participantId == participant.participantId }
+              ?: throw Exception()
+      response.add(MatchParticipant(
+              summoner = summoner,
+              championId = info.championId,
+              spell1Id = info.spell1Id,
+              spell2Id = info.spell2Id,
+              teamId = info.teamId,
+              stats = participantStats(info.stats),
+              timeline = participantTimeline(info.timeline)
+      ))
+    }
+    response
+  } catch (e: Exception) {
+    mutableListOf()
+  }
+}
+
+/**
  * Match to document
  * Convert match object to database document
  */
 fun matchToDocument(match: Match): MatchDocument {
+  val participants = getParticipants(match)
+  val participantsIds = participants.map { p -> ObjectId(p.summoner._id) }
+  val badMatch = participants.count() == 0
   return MatchDocument(
           region = match.platformId,
           remake = isRemake(match),
+          match_break = badMatch,
           game_id = match.gameId,
           creation = Date(match.gameCreation),
+          duration = match.gameDuration,
           mode = match.gameMode,
           type = match.gameType,
           version = match.gameVersion,
           map_id = match.mapId,
           queue = match.queueId,
           season = match.seasonId,
-          teams = matchTeams(match)
+          teams = matchTeams(match),
+          participants = participants,
+          participantsIds = participantsIds
   )
 }

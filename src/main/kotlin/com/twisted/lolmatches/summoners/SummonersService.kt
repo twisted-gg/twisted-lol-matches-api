@@ -16,6 +16,7 @@ class SummonersService {
     val url = UriComponentsBuilder.fromHttpUrl(this.baseUrl)
             .queryParam("summonerName", param.summonerName)
             .queryParam("region", param.region)
+            .queryParam("accountID", param.accountID)
             .toUriString()
     return this.rest.getForObject<SummonerDto>(url, SummonerDto::class.java)
             ?: throw NotFoundException()

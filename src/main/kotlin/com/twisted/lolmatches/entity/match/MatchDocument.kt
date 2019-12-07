@@ -1,9 +1,8 @@
-package com.twisted.lolmatches.match
+package com.twisted.lolmatches.entity.match
 
+import com.twisted.lolmatches.entity.match.team.MatchTeam
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.stereotype.Repository
 import java.util.*
 
 @Document(collection = "lol_matches")
@@ -21,11 +20,10 @@ data class MatchDocument(
         private val map_id: Int,
         private val queue: Int,
         private val season: Int,
+        private val remake: Boolean,
+        private val teams: List<MatchTeam>,
         // Timestamps
         private val createdAt: Date = Date(),
         private val updatedAt: Date = Date()
 )
 
-@Repository
-interface MatchRepository : MongoRepository<MatchDocument, String> {
-}

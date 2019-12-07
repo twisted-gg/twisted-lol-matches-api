@@ -1,13 +1,13 @@
 package com.twisted.lolmatches.match
 
 import com.twisted.lolmatches.dto.GetSummonerDto
+import com.twisted.lolmatches.entity.match.MatchRepository
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.constant.Platform
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class MatchService(
@@ -21,21 +21,6 @@ class MatchService(
     val match = api.getMatch(region, matchId)
     repository.save(matchToDocument(match))
     return match
-  }
-
-  private fun matchToDocument(match: Match): MatchDocument {
-    val gameCreation = Date(match.gameCreation)
-    return MatchDocument(
-            region = match.platformId,
-            game_id = match.gameId,
-            creation = gameCreation,
-            mode = match.gameMode,
-            type = match.gameType,
-            version = match.gameVersion,
-            map_id = match.mapId,
-            queue = match.queueId,
-            season = match.seasonId
-    )
   }
 
   fun getSummonerMatches(params: GetSummonerDto): Match {

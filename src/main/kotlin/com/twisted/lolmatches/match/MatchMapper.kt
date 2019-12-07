@@ -1,7 +1,7 @@
 package com.twisted.lolmatches.match
 
-import com.twisted.lolmatches.dto.GetSummonerDto
-import com.twisted.lolmatches.dto.ListRegions
+import com.twisted.lolmatches.summoners.dto.GetSummonerDto
+import com.twisted.lolmatches.summoners.dto.ListRegions
 import com.twisted.lolmatches.entity.match.MatchDocument
 import com.twisted.lolmatches.entity.match.participant.*
 import com.twisted.lolmatches.entity.match.team.MatchTeam

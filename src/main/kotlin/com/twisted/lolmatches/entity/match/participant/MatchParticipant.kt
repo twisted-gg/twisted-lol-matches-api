@@ -1,6 +1,6 @@
 package com.twisted.lolmatches.entity.match.participant
 
-import com.twisted.lolmatches.dto.SummonerDto
+import com.twisted.lolmatches.summoners.dto.SummonerDto
 
 data class MatchParticipant(
         val summoner: SummonerDto,

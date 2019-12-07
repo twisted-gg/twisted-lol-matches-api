@@ -1,7 +1,7 @@
 package com.twisted.lolmatches.summoners
 
-import com.twisted.lolmatches.dto.GetSummonerDto
-import com.twisted.lolmatches.dto.SummonerDto
+import com.twisted.lolmatches.summoners.dto.GetSummonerDto
+import com.twisted.lolmatches.summoners.dto.SummonerDto
 import com.twisted.lolmatches.errors.NotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate

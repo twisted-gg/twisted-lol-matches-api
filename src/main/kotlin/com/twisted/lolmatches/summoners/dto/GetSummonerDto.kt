@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.dto
+package com.twisted.lolmatches.summoners.dto
 
 enum class ListRegions {
   LA1

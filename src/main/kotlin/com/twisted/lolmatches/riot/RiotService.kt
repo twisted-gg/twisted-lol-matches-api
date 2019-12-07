@@ -1,6 +1,6 @@
 package com.twisted.lolmatches.riot
 
-import com.twisted.lolmatches.dto.ListRegions
+import com.twisted.lolmatches.summoners.dto.ListRegions
 import net.rithms.riot.api.ApiConfig
 import net.rithms.riot.api.RiotApi
 import net.rithms.riot.constant.Platform

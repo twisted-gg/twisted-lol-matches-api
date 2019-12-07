@@ -1,6 +1,6 @@
 package com.twisted.lolmatches.match
 
-import com.twisted.lolmatches.dto.GetSummonerDto
+import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import com.twisted.lolmatches.entity.match.MatchRepository
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService

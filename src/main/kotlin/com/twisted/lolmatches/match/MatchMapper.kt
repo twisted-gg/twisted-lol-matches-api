@@ -78,17 +78,15 @@ private fun isRemake(match: Match): Boolean {
       return false
     }
   }
-  return false
+  return true
 }
 
 fun matchToDocument(match: Match): MatchDocument {
-  val gameCreation = Date(match.gameCreation)
-  val remake = isRemake(match)
   return MatchDocument(
           region = match.platformId,
-          remake = remake,
+          remake = isRemake(match),
           game_id = match.gameId,
-          creation = gameCreation,
+          creation = Date(match.gameCreation),
           mode = match.gameMode,
           type = match.gameType,
           version = match.gameVersion,

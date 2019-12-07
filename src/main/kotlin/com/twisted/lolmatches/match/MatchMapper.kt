@@ -3,9 +3,7 @@ package com.twisted.lolmatches.match
 import com.twisted.lolmatches.dto.GetSummonerDto
 import com.twisted.lolmatches.dto.ListRegions
 import com.twisted.lolmatches.entity.match.MatchDocument
-import com.twisted.lolmatches.entity.match.participant.MatchParticipant
-import com.twisted.lolmatches.entity.match.participant.MatchParticipantStats
-import com.twisted.lolmatches.entity.match.participant.MatchParticipantTimeline
+import com.twisted.lolmatches.entity.match.participant.*
 import com.twisted.lolmatches.entity.match.team.MatchTeam
 import com.twisted.lolmatches.entity.match.team.MatchTeamBans
 import com.twisted.lolmatches.entity.match.team.MatchTeamStats
@@ -117,13 +115,11 @@ private fun participantStats(stats: ParticipantStats): MatchParticipantStats {
   return MatchParticipantStats(
           altarsCaptured = stats.altarsCaptured,
           altarsNeutralized = stats.altarsNeutralized,
-          assists = stats.assists,
           champLevel = stats.champLevel,
           combatPlayerScore = stats.combatPlayerScore,
           damageDealtToObjectives = stats.damageDealtToObjectives,
           damageDealtToTurrets = stats.damageDealtToTurrets,
           damageSelfMitigated = stats.damageSelfMitigated,
-          deaths = stats.deaths,
           doubleKills = stats.doubleKills,
           firstBloodAssist = stats.isFirstBloodAssist,
           firstBloodKill = stats.isFirstBloodKill,
@@ -134,15 +130,7 @@ private fun participantStats(stats: ParticipantStats): MatchParticipantStats {
           goldEarned = stats.goldEarned,
           goldSpent = stats.goldSpent,
           inhibitorKills = stats.inhibitorKills,
-          item0 = stats.item0,
-          item1 = stats.item1,
-          item2 = stats.item2,
-          item3 = stats.item3,
-          item4 = stats.item4,
-          item5 = stats.item5,
-          item6 = stats.item6,
           killingSprees = stats.killingSprees,
-          kills = stats.kills,
           largestCriticalStrike = stats.largestCriticalStrike,
           largestKillingSpree = stats.largestKillingSpree,
           largestMultiKill = stats.largestMultiKill,
@@ -186,6 +174,29 @@ private fun participantStats(stats: ParticipantStats): MatchParticipantStats {
           visionWardsBoughtInGame = stats.visionWardsBoughtInGame,
           wardsKilled = stats.wardsKilled,
           wardsPlaced = stats.wardsPlaced,
+          playerScore0 = stats.playerScore0.toInt(),
+          playerScore1 = stats.playerScore1.toInt(),
+          playerScore2 = stats.playerScore2.toInt(),
+          playerScore3 = stats.playerScore3.toInt(),
+          playerScore4 = stats.playerScore4.toInt(),
+          playerScore5 = stats.playerScore5.toInt(),
+          playerScore6 = stats.playerScore6.toInt(),
+          playerScore7 = stats.playerScore7.toInt(),
+          playerScore8 = stats.playerScore8.toInt(),
+          playerScore9 = stats.playerScore9.toInt(),
+          perkPrimaryStyle = stats.perkPrimaryStyle,
+          perkSubStyle = stats.perkSubStyle,
+          statPerk0 = stats.statPerk0,
+          statPerk1 = stats.statPerk1,
+          statPerk2 = stats.statPerk2
+  )
+}
+
+/**
+ * Participant perks
+ */
+private fun participantPerks(stats: ParticipantStats): MatchParticipantPerks {
+  return MatchParticipantPerks(
           perk0 = stats.perk0,
           perk1 = stats.perk1,
           perk2 = stats.perk2,
@@ -209,22 +220,36 @@ private fun participantStats(stats: ParticipantStats): MatchParticipantStats {
           perk4Var3 = stats.perk4Var3.toInt(),
           perk5Var1 = stats.perk5Var1.toInt(),
           perk5Var2 = stats.perk5Var2.toInt(),
-          perk5Var3 = stats.perk5Var3.toInt(),
-          playerScore0 = stats.playerScore0.toInt(),
-          playerScore1 = stats.playerScore1.toInt(),
-          playerScore2 = stats.playerScore2.toInt(),
-          playerScore3 = stats.playerScore3.toInt(),
-          playerScore4 = stats.playerScore4.toInt(),
-          playerScore5 = stats.playerScore5.toInt(),
-          playerScore6 = stats.playerScore6.toInt(),
-          playerScore7 = stats.playerScore7.toInt(),
-          playerScore8 = stats.playerScore8.toInt(),
-          playerScore9 = stats.playerScore9.toInt(),
-          perkPrimaryStyle = stats.perkPrimaryStyle,
-          perkSubStyle = stats.perkSubStyle,
-          statPerk0 = stats.statPerk0,
-          statPerk1 = stats.statPerk1,
-          statPerk2 = stats.statPerk2
+          perk5Var3 = stats.perk5Var3.toInt()
+  )
+}
+
+/**
+ * Participant items
+ */
+private fun participantItems(stats: ParticipantStats): MatchParticipantItems {
+  return MatchParticipantItems(
+          item0 = stats.item0,
+          item1 = stats.item1,
+          item2 = stats.item2,
+          item3 = stats.item3,
+          item4 = stats.item4,
+          item5 = stats.item5,
+          item6 = stats.item6
+  )
+}
+
+/**
+ * Participant KDA
+ * Kill + assists / death
+ */
+private fun participantKDA(stats: ParticipantStats): MatchParticipantKDA {
+  val kda = (stats.kills + stats.assists) / stats.deaths.toFloat()
+  return MatchParticipantKDA(
+          kills = stats.kills,
+          assists = stats.assists,
+          deaths = stats.deaths,
+          kda = kda
   )
 }
 
@@ -250,7 +275,10 @@ private fun getParticipants(match: Match): List<MatchParticipant> {
               spell2Id = info.spell2Id,
               teamId = info.teamId,
               stats = participantStats(info.stats),
-              timeline = participantTimeline(info.timeline)
+              timeline = participantTimeline(info.timeline),
+              items = participantItems(info.stats),
+              perks = participantPerks(info.stats),
+              kda = participantKDA(info.stats)
       ))
     }
     response

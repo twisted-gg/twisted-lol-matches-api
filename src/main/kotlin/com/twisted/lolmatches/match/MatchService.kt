@@ -27,6 +27,6 @@ class MatchService(
     val summoner = summonerService.getSummoner(params)
     val region = riotApi.parseRegion(params.region)
     val matchList = api.getMatchListByAccountId(region, summoner.accountId).matches
-    return matchDetails(region, matchList[0].gameId)
+    return matchDetails(region, matchList[1].gameId)
   }
 }

@@ -81,6 +81,10 @@ private fun isRemake(match: Match): Boolean {
   return true
 }
 
+/**
+ * Match to document
+ * Convert match object to database document
+ */
 fun matchToDocument(match: Match): MatchDocument {
   return MatchDocument(
           region = match.platformId,

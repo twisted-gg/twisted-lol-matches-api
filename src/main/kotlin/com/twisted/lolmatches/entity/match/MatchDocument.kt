@@ -28,6 +28,7 @@ data class MatchDocument(
         val teams: List<MatchTeam>,
         val participantsIds: List<ObjectId>,
         val participants: List<MatchParticipant>,
+        val framesInterval: Long,
         // Timestamps
         val createdAt: Date = Date(),
         val updatedAt: Date = Date()

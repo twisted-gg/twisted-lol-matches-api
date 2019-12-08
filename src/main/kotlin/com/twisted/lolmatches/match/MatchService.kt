@@ -1,6 +1,7 @@
 package com.twisted.lolmatches.match
 
 import com.twisted.lolmatches.entity.match.MatchRepository
+import com.twisted.lolmatches.match.mapper.matchToDocument
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
@@ -19,9 +20,9 @@ class MatchService(
 
   private fun matchDetails(region: Platform, matchId: Long): Match {
     val match = api.getMatch(region, matchId)
-    // TODO
     val matchFrames = api.getTimelineByMatchId(region, match.gameId)
-    repository.save(matchToDocument(match))
+    val document = matchToDocument(match, matchFrames)
+    repository.save(document)
     return match
   }
 

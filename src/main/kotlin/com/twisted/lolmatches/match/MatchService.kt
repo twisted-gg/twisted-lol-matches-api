@@ -7,14 +7,13 @@ import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.constant.Platform
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class MatchService(
         private val summonerService: SummonersService,
         private val riotApi: RiotService,
-        @Autowired private val repository: MatchRepository
+        private val repository: MatchRepository
 ) {
   private val api = riotApi.getApi()
 

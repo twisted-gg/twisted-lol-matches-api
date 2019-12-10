@@ -14,8 +14,6 @@ class MatchController(
         private val service: MatchService
 ) {
   @GetMapping
-  fun getMatches(params: GetSummonerDto): Mono<Match> {
-    val matches = service.getSummonerMatches(params)
-    return Mono.just(matches)
-  }
+  fun getMatches(params: GetSummonerDto): Mono<Match> =
+          Mono.just(service.getSummonerMatches(params))
 }

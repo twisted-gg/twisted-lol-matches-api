@@ -32,52 +32,50 @@ private fun participantKDA(stats: ParticipantStats): MatchParticipantKDA {
 /**
  * Only save summoner details
  */
-private fun mapSummoner(summoner: SummonerDto): MatchParticipantSummoner {
-  return MatchParticipantSummoner(
-          _id = ObjectId(summoner._id),
-          name = summoner.name,
-          puuid = summoner.puuid,
-          level = summoner.summonerLevel
-  )
-}
+private fun mapSummoner(summoner: SummonerDto): MatchParticipantSummoner =
+        MatchParticipantSummoner(
+                _id = ObjectId(summoner._id),
+                name = summoner.name,
+                puuid = summoner.puuid,
+                level = summoner.summonerLevel
+        )
 
 /**
  * Get participant details
  */
-private fun getParticipantDetails(match: Match, participantId: Int): Participant {
-  return match.participants.find { p -> p.participantId == participantId }
-          ?: throw Exception()
-}
+private fun getParticipantDetails(match: Match, participantId: Int): Participant =
+        match.participants.find { p -> p.participantId == participantId }
+                ?: throw Exception()
 
 /**
  * Get match participants
  */
-fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParticipant> {
-  return try {
-    val response = mutableListOf<MatchParticipant>()
-    for (participant in match.participantIdentities) {
-      val params = GetSummonerDto(
-              region = ListRegions.valueOf(match.platformId),
-              summonerName = participant.player.summonerName,
-              accountID = participant.player.currentAccountId
-      )
-      val summoner = summonersService.getSummoner(params)
-      val info = getParticipantDetails(match, participant.participantId)
-      response.add(MatchParticipant(
-              summoner = mapSummoner(summoner),
-              championId = info.championId,
-              spell1Id = info.spell1Id,
-              spell2Id = info.spell2Id,
-              teamId = info.teamId,
-              stats = participantStats(info.stats),
-              stats_timeline = participantTimeline(info.timeline),
-              items = participantItems(info.stats),
-              perks = participantPerks(info.stats),
-              kda = participantKDA(info.stats)
-      ))
-    }
-    response
-  } catch (e: Exception) {
-    mutableListOf()
-  }
-}
+fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParticipant> =
+        try {
+          val response = mutableListOf<MatchParticipant>()
+          for (participant in match.participantIdentities) {
+            val params = GetSummonerDto(
+                    region = ListRegions.valueOf(match.platformId),
+                    summonerName = participant.player.summonerName,
+                    accountID = participant.player.currentAccountId
+            )
+            val summoner = summonersService.getSummoner(params)
+            val info = getParticipantDetails(match, participant.participantId)
+            response.add(MatchParticipant(
+                    summoner = mapSummoner(summoner),
+                    championId = info.championId,
+                    spell1Id = info.spell1Id,
+                    spell2Id = info.spell2Id,
+                    teamId = info.teamId,
+                    stats = participantStats(info.stats),
+                    stats_timeline = participantTimeline(info.timeline),
+                    items = participantItems(info.stats),
+                    perks = participantPerks(info.stats),
+                    kda = participantKDA(info.stats)
+            ))
+          }
+          response
+        } catch (e: Exception) {
+          mutableListOf()
+        }
+

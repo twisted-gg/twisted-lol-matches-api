@@ -8,7 +8,7 @@ data class MatchParticipant(
         val teamId: Int,
         val kda: MatchParticipantKDA,
         val stats: MatchParticipantStats,
-        val stats_timeline: MatchParticipantTimeline,
+        val timeline: MatchParticipantTimeline,
         val items: MatchParticipantItems,
         val perks: MatchParticipantPerks
 )

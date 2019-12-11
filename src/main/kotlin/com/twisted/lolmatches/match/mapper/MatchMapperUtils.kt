@@ -19,3 +19,4 @@ fun isWin(value: String): Boolean {
   val condition = "Win"
   return value == condition
 }
+

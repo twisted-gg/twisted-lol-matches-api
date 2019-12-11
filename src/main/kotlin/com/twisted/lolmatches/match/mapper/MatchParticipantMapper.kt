@@ -61,6 +61,10 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
             )
             val summoner = summonersService.getSummoner(params)
             val info = getParticipantDetails(match, participant.participantId)
+            matchParticipantEventMapper(
+                    participantId = participant.participantId,
+                    frames = matchFrames
+            )
             response.add(MatchParticipant(
                     summoner = mapSummoner(summoner),
                     championId = info.championId,
@@ -68,7 +72,7 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
                     spell2Id = info.spell2Id,
                     teamId = info.teamId,
                     stats = participantStats(info.stats),
-                    stats_timeline = participantTimeline(info.timeline),
+                    timeline = participantTimeline(info.timeline),
                     items = participantItems(info.stats),
                     perks = participantPerks(info.stats),
                     kda = participantKDA(info.stats)

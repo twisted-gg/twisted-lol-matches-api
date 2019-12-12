@@ -5,27 +5,28 @@ import com.twisted.lolmatches.entity.match.participant.frames.MatchParticipantFr
 import net.rithms.riot.api.endpoints.match.dto.MatchFrame
 import net.rithms.riot.api.endpoints.match.dto.MatchParticipantFrame
 
-private fun parseFrame(frame: MatchParticipantFrame): MatchParticipantFrames =
+private fun parseFrame(event: MatchParticipantFrame, frame: Int): MatchParticipantFrames =
         MatchParticipantFrames(
                 position = MatchParticipantFramesPosition(
-                        x = frame.position.x,
-                        y = frame.position.y
+                        x = event.position.x,
+                        y = event.position.y
                 ),
-                currentGold = frame.currentGold,
-                totalGold = frame.totalGold,
-                level = frame.level,
-                xp = frame.xp,
-                totalMinionsKilled = frame.minionsKilled + frame.jungleMinionsKilled,
-                minionsKilled = frame.minionsKilled,
-                jungleMinionsKilled = frame.jungleMinionsKilled,
-                teamScore = frame.teamScore
+                currentGold = event.currentGold,
+                totalGold = event.totalGold,
+                level = event.level,
+                xp = event.xp,
+                totalMinionsKilled = event.minionsKilled + event.jungleMinionsKilled,
+                minionsKilled = event.minionsKilled,
+                jungleMinionsKilled = event.jungleMinionsKilled,
+                teamScore = event.teamScore,
+                frame = frame.toByte()
         )
 
 fun matchParticipantFrames(frames: List<MatchFrame>, participantId: Int): List<MatchParticipantFrames> {
   val response = mutableListOf<MatchParticipantFrames>()
-  for (frame in frames) {
+  for ((i, frame) in frames.withIndex()) {
     val participantFrame = frame.participantFrames[participantId] ?: continue
-    response.add(parseFrame(participantFrame))
+    response.add(parseFrame(participantFrame, i))
   }
   return response
 }

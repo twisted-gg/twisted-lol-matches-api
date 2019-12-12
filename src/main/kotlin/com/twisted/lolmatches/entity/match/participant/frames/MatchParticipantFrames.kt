@@ -2,6 +2,7 @@ package com.twisted.lolmatches.entity.match.participant.frames
 
 data class MatchParticipantFrames(
         val position: MatchParticipantFramesPosition,
+        val frame: Byte,
         val currentGold: Int,
         val totalGold: Int,
         val level: Int,

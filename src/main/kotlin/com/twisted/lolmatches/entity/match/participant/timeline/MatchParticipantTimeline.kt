@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.entity.match.participant
+package com.twisted.lolmatches.entity.match.participant.timeline
 
 data class MatchParticipantTimeline(
         val lane: String,

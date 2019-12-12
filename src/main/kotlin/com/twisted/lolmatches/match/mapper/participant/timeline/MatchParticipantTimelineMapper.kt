@@ -1,6 +1,6 @@
-package com.twisted.lolmatches.match.mapper.participant
+package com.twisted.lolmatches.match.mapper.participant.timeline
 
-import com.twisted.lolmatches.entity.match.participant.MatchParticipantTimeline
+import com.twisted.lolmatches.entity.match.participant.timeline.MatchParticipantTimeline
 import net.rithms.riot.api.endpoints.match.dto.ParticipantTimeline
 
 fun validation(value: Map<String, Double>?): Map<String, Double> {

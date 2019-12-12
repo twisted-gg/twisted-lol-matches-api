@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.entity.match.participant
+package com.twisted.lolmatches.entity.match.participant.stats
 
 data class MatchParticipantKDA(
         val kills: Int,

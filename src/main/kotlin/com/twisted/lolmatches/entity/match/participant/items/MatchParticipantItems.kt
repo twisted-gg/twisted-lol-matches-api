@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.entity.match.participant
+package com.twisted.lolmatches.entity.match.participant.items
 
 data class MatchParticipantItems(
         val item0: Int,

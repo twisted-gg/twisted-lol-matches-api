@@ -1,7 +1,7 @@
-package com.twisted.lolmatches.match.mapper.participant
+package com.twisted.lolmatches.match.mapper.participant.frames
 
-import com.twisted.lolmatches.entity.match.participant.MatchParticipantFrames
-import com.twisted.lolmatches.entity.match.participant.MatchParticipantFramesPosition
+import com.twisted.lolmatches.entity.match.participant.frames.MatchParticipantFrames
+import com.twisted.lolmatches.entity.match.participant.frames.MatchParticipantFramesPosition
 import net.rithms.riot.api.endpoints.match.dto.MatchFrame
 import net.rithms.riot.api.endpoints.match.dto.MatchParticipantFrame
 

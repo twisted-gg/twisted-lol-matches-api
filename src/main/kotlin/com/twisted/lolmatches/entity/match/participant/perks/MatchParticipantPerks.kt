@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.entity.match.participant
+package com.twisted.lolmatches.entity.match.participant.perks
 
 data class MatchParticipantPerks(
         val perk0: Int,

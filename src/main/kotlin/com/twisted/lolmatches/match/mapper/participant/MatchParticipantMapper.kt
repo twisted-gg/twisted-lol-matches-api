@@ -1,8 +1,14 @@
 package com.twisted.lolmatches.match.mapper.participant
 
 import com.twisted.lolmatches.entity.match.participant.MatchParticipant
-import com.twisted.lolmatches.entity.match.participant.MatchParticipantKDA
 import com.twisted.lolmatches.entity.match.participant.MatchParticipantSummoner
+import com.twisted.lolmatches.entity.match.participant.stats.MatchParticipantKDA
+import com.twisted.lolmatches.match.mapper.participant.events.matchParticipantEventMapper
+import com.twisted.lolmatches.match.mapper.participant.frames.matchParticipantFrames
+import com.twisted.lolmatches.match.mapper.participant.items.participantItems
+import com.twisted.lolmatches.match.mapper.participant.perks.participantPerks
+import com.twisted.lolmatches.match.mapper.participant.stats.participantStats
+import com.twisted.lolmatches.match.mapper.participant.timeline.participantTimeline
 import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import com.twisted.lolmatches.summoners.dto.ListRegions

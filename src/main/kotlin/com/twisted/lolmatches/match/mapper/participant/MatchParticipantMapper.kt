@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.match.mapper
+package com.twisted.lolmatches.match.mapper.participant
 
 import com.twisted.lolmatches.entity.match.participant.MatchParticipant
 import com.twisted.lolmatches.entity.match.participant.MatchParticipantKDA
@@ -60,8 +60,12 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
                     accountID = participant.player.currentAccountId
             )
             val summoner = summonersService.getSummoner(params)
+            val frames = matchParticipantFrames(
+                    frames = matchFrames.frames,
+                    participantId = participant.participantId
+            )
             val info = getParticipantDetails(match, participant.participantId)
-            matchParticipantEventMapper(
+            val events = matchParticipantEventMapper(
                     participantId = participant.participantId,
                     frames = matchFrames
             )
@@ -75,7 +79,8 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
                     timeline = participantTimeline(info.timeline),
                     items = participantItems(info.stats),
                     perks = participantPerks(info.stats),
-                    kda = participantKDA(info.stats)
+                    kda = participantKDA(info.stats),
+                    frames = frames
             ))
           }
           response

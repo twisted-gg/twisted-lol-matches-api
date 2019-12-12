@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.match.mapper
+package com.twisted.lolmatches.match.mapper.participant
 
 import com.twisted.lolmatches.entity.match.participant.MatchParticipantPerks
 import net.rithms.riot.api.endpoints.match.dto.ParticipantStats

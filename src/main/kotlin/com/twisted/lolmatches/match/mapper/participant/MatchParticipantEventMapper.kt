@@ -1,4 +1,4 @@
-package com.twisted.lolmatches.match.mapper
+package com.twisted.lolmatches.match.mapper.participant
 
 import net.rithms.riot.api.endpoints.match.dto.MatchEvent
 import net.rithms.riot.api.endpoints.match.dto.MatchTimeline
@@ -15,5 +15,5 @@ fun matchParticipantEventMapper(participantId: Int, frames: MatchTimeline) {
       }
     }
   }
-  print(participantEvents)
+  // print(participantEvents)
 }

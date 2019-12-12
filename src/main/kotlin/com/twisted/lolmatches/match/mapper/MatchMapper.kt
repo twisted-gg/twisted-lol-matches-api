@@ -4,6 +4,7 @@ import com.twisted.lolmatches.entity.match.MatchDocument
 import com.twisted.lolmatches.entity.match.team.MatchTeam
 import com.twisted.lolmatches.entity.match.team.MatchTeamBans
 import com.twisted.lolmatches.entity.match.team.MatchTeamStats
+import com.twisted.lolmatches.match.mapper.participant.matchParticipants
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.api.endpoints.match.dto.MatchTimeline
 import net.rithms.riot.api.endpoints.match.dto.TeamStats

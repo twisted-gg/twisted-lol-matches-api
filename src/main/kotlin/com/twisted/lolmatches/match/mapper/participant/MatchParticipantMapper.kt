@@ -80,7 +80,8 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
                     items = participantItems(info.stats),
                     perks = participantPerks(info.stats),
                     kda = participantKDA(info.stats),
-                    frames = frames
+                    frames = frames,
+                    events = events
             ))
           }
           response

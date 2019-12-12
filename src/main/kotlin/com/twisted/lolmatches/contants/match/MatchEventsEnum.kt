@@ -1,6 +1,6 @@
 package com.twisted.lolmatches.contants.match
 
-enum class MatchParticipantsEventsConstant {
+enum class MatchEventsEnum {
   CHAMPION_KILL,
   WARD_PLACED,
   WARD_KILL,
@@ -10,8 +10,5 @@ enum class MatchParticipantsEventsConstant {
   ITEM_SOLD,
   ITEM_DESTROYED,
   ITEM_UNDO,
-  SKILL_LEVEL_UP,
-  ASCENDED_EVENT,
-  CAPTURE_POINT,
-  PORO_KING_SUMMON
+  SKILL_LEVEL_UP
 }

@@ -11,5 +11,6 @@ data class MatchParticipant(
         val timeline: MatchParticipantTimeline,
         val items: MatchParticipantItems,
         val perks: MatchParticipantPerks,
-        val frames: List<MatchParticipantFrames>
+        val frames: List<MatchParticipantFrames>,
+        val events: MatchParticipantEvents
 )

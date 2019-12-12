@@ -21,7 +21,6 @@ class SummonersService {
             .queryParam("region", param.region)
             .queryParam("accountID", param.accountID)
             .toUriString()
-    println("run" + param.summonerName)
     return CompletableFuture.supplyAsync {
       this.rest.getForObject<SummonerDto>(url, SummonerDto::class.java)
               ?: throw NotFoundException()

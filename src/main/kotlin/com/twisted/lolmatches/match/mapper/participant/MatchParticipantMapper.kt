@@ -13,10 +13,8 @@ import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import com.twisted.lolmatches.summoners.dto.ListRegions
 import com.twisted.lolmatches.summoners.dto.SummonerDto
-import net.rithms.riot.api.endpoints.match.dto.Match
-import net.rithms.riot.api.endpoints.match.dto.MatchTimeline
-import net.rithms.riot.api.endpoints.match.dto.Participant
-import net.rithms.riot.api.endpoints.match.dto.ParticipantStats
+import kotlinx.coroutines.runBlocking
+import net.rithms.riot.api.endpoints.match.dto.*
 import org.bson.types.ObjectId
 
 private val summonersService = SummonersService()
@@ -53,41 +51,67 @@ private fun getParticipantDetails(match: Match, participantId: Int): Participant
         match.participants.find { p -> p.participantId == participantId }
                 ?: throw Exception()
 
+fun getSummonerList(match: Match): List<SummonerDto> {
+  val params = mutableListOf<GetSummonerDto>()
+  for (participant in match.participantIdentities) {
+    params.add(GetSummonerDto(
+            region = ListRegions.valueOf(match.platformId),
+            summonerName = participant.player.summonerName,
+            accountID = participant.player.currentAccountId
+    ))
+  }
+  return runBlocking {
+    summonersService.getSummonerList(params)
+  }
+}
+
+// Getters
+private fun findSummoner(participant: ParticipantIdentity, list: List<SummonerDto>) = list.find { p -> p.accountId == participant.player.currentAccountId }
+
+private fun getFrames(frames: List<MatchFrame>, participantId: Int) = matchParticipantFrames(
+        frames = frames,
+        participantId = participantId
+)
+
+private fun getEvents(frames: MatchTimeline, participantId: Int) = matchParticipantEventMapper(
+        frames = frames,
+        participantId = participantId
+)
+
+private fun mapInstance(match: Match, matchFrames: MatchTimeline, summoner: SummonerDto, participantId: Int): MatchParticipant {
+  val participant = getParticipantDetails(match = match, participantId = participantId)
+  val frames = getFrames(frames = matchFrames.frames, participantId = participant.participantId)
+  val events = getEvents(frames = matchFrames, participantId = participant.participantId)
+  return MatchParticipant(
+          summoner = mapSummoner(summoner),
+          championId = participant.championId,
+          spell1Id = participant.spell1Id,
+          spell2Id = participant.spell2Id,
+          teamId = participant.teamId,
+          stats = participantStats(participant.stats),
+          timeline = participantTimeline(participant.timeline),
+          items = participantItems(participant.stats),
+          perks = participantPerks(participant.stats),
+          kda = participantKDA(participant.stats),
+          frames = frames,
+          events = events
+  )
+}
+
 /**
  * Get match participants
  */
 fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParticipant> =
         try {
           val response = mutableListOf<MatchParticipant>()
+          val participantsList = getSummonerList(match)
           for (participant in match.participantIdentities) {
-            val params = GetSummonerDto(
-                    region = ListRegions.valueOf(match.platformId),
-                    summonerName = participant.player.summonerName,
-                    accountID = participant.player.currentAccountId
-            )
-            val summoner = summonersService.getSummoner(params)
-            val frames = matchParticipantFrames(
-                    frames = matchFrames.frames,
+            val summoner = findSummoner(participant, participantsList) ?: throw Exception()
+            response.add(mapInstance(
+                    match = match,
+                    matchFrames = matchFrames,
+                    summoner = summoner,
                     participantId = participant.participantId
-            )
-            val info = getParticipantDetails(match, participant.participantId)
-            val events = matchParticipantEventMapper(
-                    participantId = participant.participantId,
-                    frames = matchFrames
-            )
-            response.add(MatchParticipant(
-                    summoner = mapSummoner(summoner),
-                    championId = info.championId,
-                    spell1Id = info.spell1Id,
-                    spell2Id = info.spell2Id,
-                    teamId = info.teamId,
-                    stats = participantStats(info.stats),
-                    timeline = participantTimeline(info.timeline),
-                    items = participantItems(info.stats),
-                    perks = participantPerks(info.stats),
-                    kda = participantKDA(info.stats),
-                    frames = frames,
-                    events = events
             ))
           }
           response

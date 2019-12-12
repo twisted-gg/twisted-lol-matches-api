@@ -5,12 +5,13 @@ import com.twisted.lolmatches.entity.match.participant.MatchParticipantEvents
 import net.rithms.riot.api.endpoints.match.dto.MatchEvent
 import net.rithms.riot.api.endpoints.match.dto.MatchTimeline
 
+private fun isParticipantEvent(event: MatchEvent, participantId: Int): Boolean =
+        event.participantId == participantId || event.killerId == participantId || event.creatorId == participantId
+
 private fun getEvents(frames: MatchTimeline, participantId: Int): List<MatchEvent> =
         frames.frames.map { f -> f.events }
                 .flatten()
-                .filter { e ->
-                  e.participantId == participantId || e.killerId == participantId || e.creatorId == participantId
-                }
+                .filter { e -> isParticipantEvent(e, participantId) }
 
 private fun fillEvent(event: MatchEvent, response: MatchParticipantEvents): MatchParticipantEvents {
   when (event.type) {

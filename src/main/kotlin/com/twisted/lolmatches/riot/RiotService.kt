@@ -21,8 +21,6 @@ class RiotService {
     return region
   }
 
-  fun getApi(): RiotApi {
-    val config = ApiConfig().setKey(apiKey)
-    return RiotApi(config)
-  }
+  fun getApi() =
+          RiotApi(ApiConfig().setKey(apiKey))
 }

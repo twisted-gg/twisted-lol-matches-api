@@ -66,8 +66,6 @@ fun getSummonerList(match: Match): List<SummonerDto> {
 }
 
 // Getters
-private fun findSummoner(participant: ParticipantIdentity, list: List<SummonerDto>) = list.find { p -> p.accountId == participant.player.currentAccountId }
-
 private fun getFrames(frames: List<MatchFrame>, participantId: Int) = matchParticipantFrames(
         frames = frames,
         participantId = participantId
@@ -99,6 +97,11 @@ private fun mapInstance(match: Match, matchFrames: MatchTimeline, summoner: Summ
 }
 
 /**
+ * Find summoner
+ */
+fun findSummonerByParticipant(participant: ParticipantIdentity, list: List<SummonerDto>) = list.find { p -> p.accountId == participant.player.currentAccountId }
+
+/**
  * Get match participants
  */
 fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParticipant> =
@@ -106,7 +109,7 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
           val response = mutableListOf<MatchParticipant>()
           val participantsList = getSummonerList(match)
           for (participant in match.participantIdentities) {
-            val summoner = findSummoner(participant, participantsList) ?: throw Exception()
+            val summoner = findSummonerByParticipant(participant, participantsList) ?: throw Exception()
             response.add(mapInstance(
                     match = match,
                     matchFrames = matchFrames,

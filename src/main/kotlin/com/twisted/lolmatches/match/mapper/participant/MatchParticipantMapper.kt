@@ -2,6 +2,7 @@ package com.twisted.lolmatches.match.mapper.participant
 
 import com.twisted.lolmatches.entity.match.participant.MatchParticipant
 import com.twisted.lolmatches.entity.match.participant.MatchParticipantSummoner
+import com.twisted.lolmatches.entity.match.participant.events.MatchParticipantEvents
 import com.twisted.lolmatches.entity.match.participant.stats.MatchParticipantKDA
 import com.twisted.lolmatches.match.mapper.participant.events.matchParticipantEventMapper
 import com.twisted.lolmatches.match.mapper.participant.frames.matchParticipantFrames
@@ -65,21 +66,12 @@ fun getSummonerList(match: Match): List<SummonerDto> {
   }
 }
 
-// Getters
-private fun getFrames(frames: List<MatchFrame>, participantId: Int) = matchParticipantFrames(
-        frames = frames,
-        participantId = participantId
-)
-
-private fun getEvents(frames: MatchTimeline, participantId: Int) = matchParticipantEventMapper(
-        frames = frames,
-        participantId = participantId
-)
-
-private fun mapInstance(match: Match, matchFrames: MatchTimeline, summoner: SummonerDto, participantId: Int): MatchParticipant {
+private fun mapInstance(match: Match, matchFrames: MatchTimeline, summoner: SummonerDto, participantId: Int, events: MatchParticipantEvents): MatchParticipant {
   val participant = getParticipantDetails(match = match, participantId = participantId)
-  val frames = getFrames(frames = matchFrames.frames, participantId = participant.participantId)
-  val events = getEvents(frames = matchFrames, participantId = participant.participantId)
+  val frames = matchParticipantFrames(
+          frames = matchFrames.frames,
+          participantId = participantId
+  )
   return MatchParticipant(
           summoner = mapSummoner(summoner),
           championId = participant.championId,
@@ -110,11 +102,18 @@ fun matchParticipants(match: Match, matchFrames: MatchTimeline): List<MatchParti
           val participantsList = getSummonerList(match)
           for (participant in match.participantIdentities) {
             val summoner = findSummonerByParticipant(participant, participantsList) ?: throw Exception()
+            val events = matchParticipantEventMapper(
+                    match = match,
+                    frames = matchFrames,
+                    participantId = participant.participantId,
+                    participants = participantsList
+            )
             response.add(mapInstance(
                     match = match,
                     matchFrames = matchFrames,
                     summoner = summoner,
-                    participantId = participant.participantId
+                    participantId = participant.participantId,
+                    events = events
             ))
           }
           response

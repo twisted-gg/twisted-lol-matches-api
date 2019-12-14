@@ -5,12 +5,18 @@ import com.twisted.lolmatches.entity.match.participant.frames.MatchParticipantFr
 import net.rithms.riot.api.endpoints.match.dto.MatchFrame
 import net.rithms.riot.api.endpoints.match.dto.MatchParticipantFrame
 
+private fun parsePosition(event: MatchParticipantFrame): MatchParticipantFramesPosition {
+  val x = event.position?.x ?: 0
+  val y = event.position?.y ?: 0
+  return MatchParticipantFramesPosition(
+          x = x,
+          y = y
+  )
+}
+
 private fun parseFrame(event: MatchParticipantFrame, frame: Int): MatchParticipantFrames =
         MatchParticipantFrames(
-                position = MatchParticipantFramesPosition(
-                        x = event.position.x,
-                        y = event.position.y
-                ),
+                position = parsePosition(event),
                 currentGold = event.currentGold,
                 totalGold = event.totalGold,
                 level = event.level,

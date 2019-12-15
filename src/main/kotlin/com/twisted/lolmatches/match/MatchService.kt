@@ -7,6 +7,7 @@ import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.api.endpoints.match.dto.MatchReference
+import net.rithms.riot.api.endpoints.match.dto.MatchTimeline
 import net.rithms.riot.api.request.AsyncRequest
 import net.rithms.riot.api.request.RequestAdapter
 import net.rithms.riot.constant.Platform
@@ -21,20 +22,29 @@ class MatchService(
 ) {
   private val api = riotApi.getApi()
 
-  private fun formatMatchDetails(match: Match, region: Platform): Match {
-    val matchFrames = api.getTimelineByMatchId(region, match.gameId)
-    val document = matchToDocument(match, matchFrames)
-    repository.save(document)
-    return match
+  private fun getMatchesTimeline(matchList: List<MatchReference>, region: Platform): Map<Long, MatchTimeline> {
+    val response = mutableMapOf<Long, MatchTimeline>()
+    val asyncApi = riotApi.getAsynApi()
+    for (match in matchList) {
+      asyncApi.getTimelineByMatchId(region, match.gameId).also {
+        it.addListeners(object : RequestAdapter() {
+          override fun onRequestSucceeded(request: AsyncRequest) {
+            response[match.gameId] = request.getDto<MatchTimeline>()
+          }
+        })
+      }
+    }
+    asyncApi.awaitAll()
+    return response
   }
 
   private fun existsByGameIdAndRegion(match: MatchReference) = repository.findByIdAndRegion(gameId = match.gameId, region = match.platformId.toString()) != null
 
   private fun getAllMatchesDetails(matchList: List<MatchReference>, region: Platform): List<Match> {
-    val asynApi = api.asyncApi ?: throw Exception()
+    val asyncApi = riotApi.getAsynApi()
     val allMatchDetails = mutableListOf<Match>()
     for (match in matchList) {
-      asynApi.getMatch(region, match.gameId).also {
+      asyncApi.getMatch(region, match.gameId).also {
         it.addListeners(object : RequestAdapter() {
           override fun onRequestSucceeded(request: AsyncRequest) {
             allMatchDetails.add(request.getDto<Match>())
@@ -42,15 +52,21 @@ class MatchService(
         })
       }
     }
-    asynApi.awaitAll()
+    asyncApi.awaitAll()
     return allMatchDetails
   }
 
   private fun loadAllMatches(matchList: List<MatchReference>, region: Platform): Int {
     val uniqueMatchList = matchList.filter { m -> !existsByGameIdAndRegion(m) }
     val matches = getAllMatchesDetails(uniqueMatchList, region)
+    val matchesTimeline = getMatchesTimeline(uniqueMatchList, region)
     for (match in matches) {
-      formatMatchDetails(match, region)
+      val timeline = matchesTimeline[match.gameId] ?: continue
+      val document = matchToDocument(
+              match = match,
+              matchTimeline = timeline
+      )
+      repository.save(document)
     }
     return uniqueMatchList.size
   }

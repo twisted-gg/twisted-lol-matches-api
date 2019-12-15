@@ -69,13 +69,13 @@ private fun matchTeams(match: Match): List<MatchTeam> {
  * Match to document
  * Convert match object to database document
  */
-fun matchToDocument(match: Match, matchFrames: MatchTimeline): MatchDocument {
-  val participants = matchParticipants(match, matchFrames)
+fun matchToDocument(match: Match, matchTimeline: MatchTimeline): MatchDocument {
+  val participants = matchParticipants(match, matchTimeline)
   val participantsIds = participants.map { p -> p.summoner._id }
   val badMatch = participants.count() == 0
   return MatchDocument(
           region = match.platformId,
-          framesInterval = matchFrames.frameInterval,
+          framesInterval = matchTimeline.frameInterval,
           remake = isRemake(match),
           match_break = badMatch,
           game_id = match.gameId,

@@ -29,4 +29,6 @@ class RiotService {
             .setMaxAsyncThreads(MAX_THREADS)
     return RiotApi(config)
   }
+
+  fun getAsynApi() = getApi().asyncApi ?: throw Exception()
 }

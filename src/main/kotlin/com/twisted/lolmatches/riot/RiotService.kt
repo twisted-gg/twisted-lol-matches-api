@@ -6,6 +6,8 @@ import net.rithms.riot.api.RiotApi
 import net.rithms.riot.constant.Platform
 import org.springframework.stereotype.Component
 
+const val MAX_THREADS = 4
+
 @Component
 class RiotService {
   private val apiKey = System.getenv("API_KEY") ?: ""
@@ -21,6 +23,10 @@ class RiotService {
     return region
   }
 
-  fun getApi() =
-          RiotApi(ApiConfig().setKey(apiKey))
+  fun getApi(): RiotApi {
+    val config = ApiConfig()
+            .setKey(apiKey)
+            .setMaxAsyncThreads(MAX_THREADS)
+    return RiotApi(config)
+  }
 }

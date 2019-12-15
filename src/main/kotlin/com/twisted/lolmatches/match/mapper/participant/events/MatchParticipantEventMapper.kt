@@ -20,6 +20,8 @@ fun matchParticipantEventMapper(match: Match, participantId: Int, frames: MatchT
   val itemEvents = mutableListOf<MatchParticipantEventsItem>()
   val skillLevelUpEvents = mutableListOf<MatchParticipantEventsSkillLevelUp>()
   val championKillEvents = mutableListOf<MatchParticipantEventsChampionKill>()
+  val buildingKillEvents = mutableListOf<MatchParticipantEventsBuildingKill>()
+  val eliteMonsterKillEVents = mutableListOf<MatchParticipantEventsEliteMonsterKill>()
   val events = getEvents(frames, participantId)
   for (event in events) {
     when {
@@ -27,12 +29,16 @@ fun matchParticipantEventMapper(match: Match, participantId: Int, frames: MatchT
       isItemEvent(event) -> itemEvents.add(parseItemEvent(event))
       isSkillLevelUpEvent(event) -> skillLevelUpEvents.add(parseSkillLevelUpEvent(event))
       isChampionKillEvent(event) -> championKillEvents.add(parseChampionKillEvent(event, match, participants))
+      isBuildingKillEvent(event) -> buildingKillEvents.add(parseBuildingKillEvent(event, match, participants))
+      isEliteMonsterKillEvent(event) -> eliteMonsterKillEVents.add(parseEliteMonsterKillEvent(event))
     }
   }
   return MatchParticipantEvents(
           ward = wardEvents,
-          kill = championKillEvents,
+          championKill = championKillEvents,
           item = itemEvents,
-          skillLevelUp = skillLevelUpEvents
+          skillLevelUp = skillLevelUpEvents,
+          buildingKill = buildingKillEvents,
+          eliteMonsterKill = eliteMonsterKillEVents
   )
 }

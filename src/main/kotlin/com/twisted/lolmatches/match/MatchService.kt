@@ -21,7 +21,7 @@ class MatchService(
 ) {
   private val api = riotApi.getApi()
 
-  private fun matchDetails(match: Match, region: Platform): Match {
+  private fun formatMatchDetails(match: Match, region: Platform): Match {
     val matchFrames = api.getTimelineByMatchId(region, match.gameId)
     val document = matchToDocument(match, matchFrames)
     repository.save(document)
@@ -30,20 +30,28 @@ class MatchService(
 
   private fun existsByGameIdAndRegion(match: MatchReference) = repository.findByIdAndRegion(gameId = match.gameId, region = match.platformId.toString()) != null
 
-  private fun loadAllMatches(matchList: List<MatchReference>, region: Platform): Int {
+  private fun getAllMatchesDetails(matchList: List<MatchReference>, region: Platform): List<Match> {
     val asynApi = api.asyncApi ?: throw Exception()
-    val uniqueMatchList = matchList.filter { m -> !existsByGameIdAndRegion(m) }
-    for (match in uniqueMatchList) {
+    val allMatchDetails = mutableListOf<Match>()
+    for (match in matchList) {
       asynApi.getMatch(region, match.gameId).also {
         it.addListeners(object : RequestAdapter() {
           override fun onRequestSucceeded(request: AsyncRequest) {
-            val response = request.getDto<Match>()
-            matchDetails(response, region)
+            allMatchDetails.add(request.getDto<Match>())
           }
         })
       }
     }
     asynApi.awaitAll()
+    return allMatchDetails
+  }
+
+  private fun loadAllMatches(matchList: List<MatchReference>, region: Platform): Int {
+    val uniqueMatchList = matchList.filter { m -> !existsByGameIdAndRegion(m) }
+    val matches = getAllMatchesDetails(uniqueMatchList, region)
+    for (match in matches) {
+      formatMatchDetails(match, region)
+    }
     return uniqueMatchList.size
   }
 

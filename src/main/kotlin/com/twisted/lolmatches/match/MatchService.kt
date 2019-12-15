@@ -57,10 +57,10 @@ class MatchService(
   }
 
   private fun loadAllMatches(matchList: List<MatchReference>, region: Platform): Int {
-    val uniqueMatchList = matchList.filter { m -> !existsByGameIdAndRegion(m) }
-    val matches = getAllMatchesDetails(uniqueMatchList, region)
-    val matchesTimeline = getMatchesTimeline(uniqueMatchList, region)
-    for (match in matches) {
+    val newMatches = matchList.filter { m -> !existsByGameIdAndRegion(m) }
+    val matchesDetails = getAllMatchesDetails(newMatches, region)
+    val matchesTimeline = getMatchesTimeline(newMatches, region)
+    for (match in matchesDetails) {
       val timeline = matchesTimeline[match.gameId] ?: continue
       val document = matchToDocument(
               match = match,
@@ -68,7 +68,7 @@ class MatchService(
       )
       repository.save(document)
     }
-    return uniqueMatchList.size
+    return newMatches.size
   }
 
   fun getSummonerMatches(params: GetSummonerDto): Int {

@@ -12,3 +12,7 @@
 - Spring Boot 2
 - Docker
 - Mongo
+
+## CI
+### Get version
+```gradle properties -q | grep "version:" | awk '{print $2}'```

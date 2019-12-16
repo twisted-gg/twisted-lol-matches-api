@@ -5,6 +5,7 @@ import com.twisted.lolmatches.match.mapper.matchToDocument
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
+import com.twisted.lolmatches.summoners.dto.SummonerDto
 import net.rithms.riot.api.endpoints.match.dto.Match
 import net.rithms.riot.api.endpoints.match.dto.MatchReference
 import net.rithms.riot.api.endpoints.match.dto.MatchTimeline
@@ -12,7 +13,6 @@ import net.rithms.riot.api.request.AsyncRequest
 import net.rithms.riot.api.request.RequestAdapter
 import net.rithms.riot.constant.Platform
 import org.springframework.stereotype.Component
-
 
 @Component
 class MatchService(
@@ -40,6 +40,8 @@ class MatchService(
 
   private fun existsByGameIdAndRegion(match: MatchReference) = repository.findByIdAndRegion(gameId = match.gameId, region = match.platformId.toString()) != null
 
+  private fun getSummonerMatches(summoner: SummonerDto) = repository.findSummonerMatches(summoner._id)
+
   private fun getAllMatchesDetails(matchList: List<MatchReference>, region: Platform): List<Match> {
     val asyncApi = riotApi.getAsynApi()
     val allMatchDetails = mutableListOf<Match>()
@@ -57,7 +59,7 @@ class MatchService(
   }
 
   private fun loadAllMatches(matchList: List<MatchReference>, region: Platform): Int {
-    val newMatches = matchList.filter { m -> !existsByGameIdAndRegion(m) }
+    val newMatches = listOf(matchList[0]) // matchList.filter { m -> !existsByGameIdAndRegion(m) }
     val matchesDetails = getAllMatchesDetails(newMatches, region)
     val matchesTimeline = getMatchesTimeline(newMatches, region)
     for (match in matchesDetails) {
@@ -73,6 +75,7 @@ class MatchService(
 
   fun getSummonerMatches(params: GetSummonerDto): Int {
     val summoner = summonerService.getSummoner(params).get()
+    val summonerMatches = getSummonerMatches(summoner)
     val region = riotApi.parseRegion(params.region)
     val matchList = api.getMatchListByAccountId(region, summoner.accountId).matches
     return loadAllMatches(matchList, region)

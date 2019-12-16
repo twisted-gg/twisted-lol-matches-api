@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository
 interface MatchRepository : MongoRepository<MatchDocument, String> {
   @Query("{ game_id: ?0, region: '?1' }")
   fun findByIdAndRegion(gameId: Long, region: String): MatchDocument?
+
+  @Query("{ participantsIds: { \$in: [ObjectId(?0)] } }")
+  fun findSummonerMatches(id: String): List<MatchDocument>
 }

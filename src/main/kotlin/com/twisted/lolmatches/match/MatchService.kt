@@ -59,7 +59,7 @@ class MatchService(
   }
 
   private fun loadAllMatches(matchList: List<MatchReference>, region: Platform): Int {
-    val newMatches = listOf(matchList[0]) // matchList.filter { m -> !existsByGameIdAndRegion(m) }
+    val newMatches = matchList.filter { m -> !existsByGameIdAndRegion(m) }
     val matchesDetails = getAllMatchesDetails(newMatches, region)
     val matchesTimeline = getMatchesTimeline(newMatches, region)
     for (match in matchesDetails) {

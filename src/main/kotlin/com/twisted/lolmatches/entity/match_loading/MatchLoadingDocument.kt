@@ -7,11 +7,11 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "lol_matches_loading")
-data class MatchLoadingDocument (
+data class MatchLoadingDocument(
         @Id
         val id: String = "",
         override val summoner: ObjectId,
         override val region: String,
         override val matches: List<MatchLoadingMatches>,
         override val loading: Boolean = true
-): IMatchLoadingDocument
+) : IMatchLoadingDocument

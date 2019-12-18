@@ -1,6 +1,5 @@
 package com.twisted.lolmatches.entity.match_loading
 
-import com.twisted.lolmatches.summoners.dto.ListRegions
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository

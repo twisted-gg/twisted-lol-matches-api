@@ -9,7 +9,6 @@ import com.twisted.lolmatches.mapper.match.participant.frames.matchParticipantFr
 import com.twisted.lolmatches.mapper.match.participant.items.participantItems
 import com.twisted.lolmatches.mapper.match.participant.perks.participantPerks
 import com.twisted.lolmatches.mapper.match.participant.stats.participantStats
-import com.twisted.lolmatches.mapper.match.participant.timeline.participantTimeline
 import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import com.twisted.lolmatches.summoners.dto.ListRegions
@@ -79,7 +78,6 @@ private fun mapInstance(match: Match, matchFrames: MatchTimeline, summoner: Summ
           spell2Id = participant.spell2Id,
           teamId = participant.teamId,
           stats = participantStats(participant.stats),
-          timeline = participantTimeline(participant.timeline),
           items = participantItems(participant.stats),
           perks = participantPerks(participant.stats),
           kda = participantKDA(participant.stats),

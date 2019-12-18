@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-	compile("com.twisted:twisted-lol-matches-dto:0.0.6")
+	implementation("com.twisted:twisted-lol-matches-dto:0.0.0")
 	implementation("com.github.taycaldwell:riot-api-java:4.3.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")

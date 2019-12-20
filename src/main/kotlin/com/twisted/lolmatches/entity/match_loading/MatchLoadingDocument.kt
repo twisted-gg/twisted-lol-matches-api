@@ -13,5 +13,5 @@ data class MatchLoadingDocument(
         override val summoner: ObjectId,
         override val region: String,
         override val matches: List<MatchLoadingMatches>,
-        override val loading: Boolean = true
+        override var healthy: Boolean = true
 ) : IMatchLoadingDocument

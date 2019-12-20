@@ -26,13 +26,4 @@ class SummonersService {
               ?: throw NotFoundException()
     }
   }
-
-  fun getSummonerList(params: List<GetSummonerDto>): List<SummonerDto> {
-    val response = mutableListOf<CompletableFuture<SummonerDto>>()
-    for (param in params) {
-      val summoner = getSummoner(param)
-      response.add(summoner)
-    }
-    return response.map { v -> v.get() }
-  }
 }

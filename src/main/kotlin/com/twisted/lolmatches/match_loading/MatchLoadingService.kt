@@ -9,6 +9,8 @@ import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
 
 @Component
 class MatchLoadingService(
@@ -17,15 +19,35 @@ class MatchLoadingService(
         private val repository: MatchRepository,
         private val loadingRepository: MatchLoadingRepository
 ) {
+  private val url: String = System.getenv("LOADER_SERVICE")
+  private val rest = RestTemplate()
+
   private fun isLoadingMatch(game_id: Long, region: String): Boolean {
     val documents = this.loadingRepository.findMatch(game_id, region)
     val exists = this.repository.existsByGameId(game_id, region)
     return documents.count() > 0 || exists
   }
 
+  private fun sendMatchesToProcessing(id: String): Unit {
+    val finalUrl = "$url/load/$id"
+    val url = UriComponentsBuilder.fromHttpUrl(finalUrl)
+            .toUriString()
+    rest.getForEntity(
+            url,
+            String.javaClass
+    )
+  }
+
   private fun saveAndProcess(instance: MatchLoadingDocument) {
     if (instance.matches.count() == 0) return
-    loadingRepository.save(instance)
+    val newInstance = loadingRepository.save(instance)
+    val id = newInstance.id.toString()
+    try {
+      sendMatchesToProcessing(id)
+    } catch (e: Exception) {
+      newInstance.healthy = false
+      loadingRepository.save(newInstance)
+    }
   }
 
   fun reloadSummoner(params: GetSummonerDto) {

@@ -1,10 +1,12 @@
 package com.twisted.lolmatches.match_loading
 
+import com.twisted.dto.match_loading.dto.MatchLoadingSummonerStatus
 import com.twisted.lolmatches.entity.match.MatchRepository
 import com.twisted.lolmatches.entity.match_loading.MatchLoadingDocument
 import com.twisted.lolmatches.entity.match_loading.MatchLoadingRepository
 import com.twisted.lolmatches.mapper.match_loading.getLoadingPendingMatches
 import com.twisted.lolmatches.mapper.match_loading.mapMatchLoading
+import com.twisted.lolmatches.mapper.match_loading.mapSummonerLoadingMatchesStatus
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 import com.twisted.lolmatches.summoners.dto.GetSummonerDto
@@ -63,5 +65,11 @@ class MatchLoadingService(
             region = region.toString(),
             matches = loadingMatches
     ))
+  }
+
+  fun summonerStatus(params: GetSummonerDto): MatchLoadingSummonerStatus {
+    val summoner = summonerService.getSummoner(params).get()
+    val loading = loadingRepository.findSummonerLoadingMatches(summoner._id)
+    return mapSummonerLoadingMatchesStatus(summoner._id, loading)
   }
 }

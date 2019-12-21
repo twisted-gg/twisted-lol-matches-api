@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MatchLoadingRepository : MongoRepository<MatchLoadingDocument, String> {
 
-  @Query("{ matches: { \$elemMatch: { game_id: ?0 } }, region: \"?1\" }")
+  @Query("{ matches: { \$elemMatch: { game_id: ?0, loading: true } }, region: \"?1\" }")
   fun findMatch(game_id: Long, region: String): List<MatchLoadingDocument>
 
   @Query("{ summoner: ObjectId(?0), \"matches.loading\": true }")

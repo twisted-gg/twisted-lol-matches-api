@@ -3,6 +3,8 @@ package com.twisted.lolmatches.riot
 import com.twisted.lolmatches.summoners.dto.ListRegions
 import net.rithms.riot.api.ApiConfig
 import net.rithms.riot.api.RiotApi
+import net.rithms.riot.api.endpoints.match.dto.MatchReference
+import net.rithms.riot.api.request.ratelimit.RateLimitException
 import net.rithms.riot.constant.Platform
 import org.springframework.stereotype.Component
 
@@ -11,6 +13,11 @@ const val MAX_THREADS = 4
 @Component
 class RiotService {
   private val apiKey = System.getenv("API_KEY") ?: ""
+
+  private fun waitRateLimit(rateLimitException: RateLimitException) {
+    val seconds = (rateLimitException.retryAfter * 1000).toLong()
+    Thread.sleep(seconds)
+  }
 
   fun parseRegion(value: ListRegions): Platform {
     var region: Platform
@@ -30,5 +37,12 @@ class RiotService {
     return RiotApi(config)
   }
 
-  fun getAsynApi() = getApi().asyncApi ?: throw Exception()
+  fun getMatchListing(region: Platform, accountId: String): List<MatchReference> {
+    return try {
+      getApi().getMatchListByAccountId(region, accountId).matches
+    } catch (e: RateLimitException) {
+      waitRateLimit(e)
+      getMatchListing(region, accountId)
+    }
+  }
 }

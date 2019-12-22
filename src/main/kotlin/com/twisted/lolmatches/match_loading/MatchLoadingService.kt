@@ -55,7 +55,7 @@ class MatchLoadingService(
   fun reloadSummoner(params: GetSummonerDto) {
     val summoner = summonerService.getSummoner(params).get()
     val region = riotApi.parseRegion(params.region)
-    val matchList = riotApi.getApi().getMatchListByAccountId(region, summoner.accountId).matches
+    val matchList = riotApi.getMatchListing(region, summoner.accountId)
     val loadingMatches = getLoadingPendingMatches(
             matchList = matchList,
             region = region.toString()

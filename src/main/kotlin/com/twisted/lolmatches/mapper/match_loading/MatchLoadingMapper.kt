@@ -5,7 +5,7 @@ import com.twisted.lolmatches.entity.match_loading.MatchLoadingDocument
 import net.rithms.riot.api.endpoints.match.dto.MatchReference
 import org.bson.types.ObjectId
 
-fun getLoadingPendingMatches(matchList: List<MatchReference>, region: String): List<MatchLoadingMatches> {
+fun getLoadingPendingMatches(matchList: List<MatchReference>): List<MatchLoadingMatches> {
   val loadMatches = mutableListOf<MatchLoadingMatches>()
   for (match in matchList) {
     loadMatches.add(MatchLoadingMatches(

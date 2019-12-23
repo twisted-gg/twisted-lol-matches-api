@@ -1,6 +1,7 @@
 package com.twisted.lolmatches.match_loading
 
 import com.twisted.dto.match_loading.dto.MatchLoadingSummonerStatus
+import com.twisted.dto.summoner.GetSummonerRequest
 import com.twisted.lolmatches.entity.match.MatchRepository
 import com.twisted.lolmatches.entity.match_loading.MatchLoadingDocument
 import com.twisted.lolmatches.entity.match_loading.MatchLoadingRepository
@@ -9,7 +10,6 @@ import com.twisted.lolmatches.mapper.match_loading.mapMatchLoading
 import com.twisted.lolmatches.mapper.match_loading.mapSummonerLoadingMatchesStatus
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
-import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
@@ -52,14 +52,12 @@ class MatchLoadingService(
     }
   }
 
-  fun reloadSummoner(params: GetSummonerDto) {
+  fun reloadSummoner(params: GetSummonerRequest) {
     val summoner = summonerService.getSummoner(params).get()
     val region = riotApi.parseRegion(params.region)
     val matchList = riotApi.getMatchListing(region, summoner.accountId)
-    val loadingMatches = getLoadingPendingMatches(
-            matchList = matchList,
-            region = region.toString()
-    ).filter { m -> !isLoadingMatch(m.game_id, region.toString()) }
+    val loadingMatches = getLoadingPendingMatches(matchList)
+            .filter { m -> !isLoadingMatch(m.game_id, region.toString()) }
     saveAndProcess(mapMatchLoading(
             id = summoner._id,
             region = region.toString(),
@@ -67,7 +65,7 @@ class MatchLoadingService(
     ))
   }
 
-  fun summonerStatus(params: GetSummonerDto): MatchLoadingSummonerStatus {
+  fun summonerStatus(params: GetSummonerRequest): MatchLoadingSummonerStatus {
     val summoner = summonerService.getSummoner(params).get()
     val loading = loadingRepository.findSummonerLoadingMatches(summoner._id)
     return mapSummonerLoadingMatchesStatus(summoner._id, loading)

@@ -1,8 +1,8 @@
 package com.twisted.lolmatches.match
 
 import com.twisted.dto.match_loading.dto.MatchLoadingSummonerStatus
+import com.twisted.dto.summoner.GetSummonerRequest
 import com.twisted.lolmatches.match_loading.MatchLoadingService
-import com.twisted.lolmatches.summoners.dto.GetSummonerDto
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
@@ -14,9 +14,9 @@ class MatchController(
         private val loadingService: MatchLoadingService
 ) {
   @PostMapping("update")
-  fun updateMatches(@RequestBody params: GetSummonerDto): Mono<Unit> =
+  fun updateMatches(@RequestBody params: GetSummonerRequest): Mono<Unit> =
           Mono.just(loadingService.reloadSummoner(params))
 
   @GetMapping("summoner/status")
-  fun summonerStatus(params: GetSummonerDto): Mono<MatchLoadingSummonerStatus> = Mono.just(loadingService.summonerStatus(params))
+  fun summonerStatus(params: GetSummonerRequest): Mono<MatchLoadingSummonerStatus> = Mono.just(loadingService.summonerStatus(params))
 }

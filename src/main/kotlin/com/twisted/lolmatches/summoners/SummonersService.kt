@@ -1,8 +1,8 @@
 package com.twisted.lolmatches.summoners
 
+import com.twisted.dto.summoner.GetSummonerRequest
+import com.twisted.dto.summoner.SummonerDocument
 import com.twisted.lolmatches.errors.NotFoundException
-import com.twisted.lolmatches.summoners.dto.GetSummonerDto
-import com.twisted.lolmatches.summoners.dto.SummonerDto
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
@@ -15,14 +15,14 @@ class SummonersService {
   private val rest = RestTemplate()
 
   @Async
-  fun getSummoner(param: GetSummonerDto): CompletableFuture<SummonerDto> {
+  fun getSummoner(param: GetSummonerRequest): CompletableFuture<SummonerDocument> {
     val url = UriComponentsBuilder.fromHttpUrl(this.baseUrl)
             .queryParam("summonerName", param.summonerName)
             .queryParam("region", param.region)
             .queryParam("accountID", param.accountID)
             .toUriString()
     return CompletableFuture.supplyAsync {
-      this.rest.getForObject<SummonerDto>(url, SummonerDto::class.java)
+      this.rest.getForObject<SummonerDocument>(url, SummonerDocument::class.java)
               ?: throw NotFoundException()
     }
   }

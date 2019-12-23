@@ -52,7 +52,7 @@ class MatchLoadingService(
     }
   }
 
-  fun reloadSummoner(params: GetSummonerRequest) {
+  fun reloadSummoner(params: GetSummonerRequest): MatchLoadingSummonerStatus {
     val summoner = summonerService.getSummoner(params).get()
     val region = riotApi.parseRegion(params.region)
     val matchList = riotApi.getMatchListing(region, summoner.accountId)
@@ -63,6 +63,7 @@ class MatchLoadingService(
             region = region.toString(),
             matches = loadingMatches
     ))
+    return summonerStatus(params)
   }
 
   fun summonerStatus(params: GetSummonerRequest): MatchLoadingSummonerStatus {

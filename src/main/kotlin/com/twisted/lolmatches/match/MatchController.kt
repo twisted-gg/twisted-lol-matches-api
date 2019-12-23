@@ -14,7 +14,7 @@ class MatchController(
         private val loadingService: MatchLoadingService
 ) {
   @PostMapping("update")
-  fun updateMatches(@RequestBody params: GetSummonerRequest): Mono<Unit> =
+  fun updateMatches(@RequestBody params: GetSummonerRequest): Mono<MatchLoadingSummonerStatus> =
           Mono.just(loadingService.reloadSummoner(params))
 
   @GetMapping("summoner/status")

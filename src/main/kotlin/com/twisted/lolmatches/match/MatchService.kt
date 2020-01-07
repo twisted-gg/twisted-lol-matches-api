@@ -1,17 +1,21 @@
 package com.twisted.lolmatches.match
 
+import com.twisted.lolmatches.dto.match.GetSummonerMatchesRequest
 import com.twisted.lolmatches.entity.match.MatchRepository
-import com.twisted.lolmatches.entity.match_loading.MatchLoadingRepository
-import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 
 @Component
 class MatchService(
         private val summonerService: SummonersService,
-        private val riotApi: RiotService,
-        private val repository: MatchRepository,
-        private val loadingRepository: MatchLoadingRepository
+        private val repository: MatchRepository
 ) {
-  private val api = riotApi.getApi()
+  fun getMatches(query: GetSummonerMatchesRequest): Int {
+    val summoner = summonerService.getSummoner(query).get()
+    val summonerId = summoner._id
+    val matches = repository.findSummonerMatches(summonerId, PageRequest.of(query.page, query.limit))
+    val total = repository.countTotalMatches(summonerId)
+    return matches.count()
+  }
 }

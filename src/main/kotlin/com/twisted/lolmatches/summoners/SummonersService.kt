@@ -2,6 +2,7 @@ package com.twisted.lolmatches.summoners
 
 import com.twisted.dto.summoner.GetSummonerRequest
 import com.twisted.dto.summoner.SummonerDocument
+import com.twisted.lolmatches.dto.match.GetSummonerMatchesRequest
 import com.twisted.lolmatches.errors.NotFoundException
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -13,6 +14,15 @@ import java.util.concurrent.CompletableFuture
 class SummonersService {
   private val baseUrl = System.getenv("SUMMONERS_SERVICE")
   private val rest = RestTemplate()
+
+  @Async
+  fun getSummoner(param: GetSummonerMatchesRequest): CompletableFuture<SummonerDocument> {
+    val query = GetSummonerRequest(
+            summonerName = param.summonerName,
+            region = param.region
+    )
+    return getSummoner(query)
+  }
 
   @Async
   fun getSummoner(param: GetSummonerRequest): CompletableFuture<SummonerDocument> {

@@ -7,6 +7,7 @@ import com.twisted.dto.match_listing.matches.summoner.MatchListingSummonerStats
 import com.twisted.dto.match_listing.matches.teams.MatchListingTeamObject
 import com.twisted.dto.match_listing.matches.teams.MatchListingTeamParticipant
 import com.twisted.dto.summoner.SummonerDocument
+import com.twisted.enum.common.MapsDto
 import com.twisted.enum.common.QueuesDto
 import com.twisted.enum.common.SeasonDto
 import com.twisted.enum.getMapValueFromKey
@@ -85,7 +86,7 @@ fun mapperMatchListingMatches(summoner: SummonerDocument, matches: List<MatchDoc
                     queue = getMapValueFromKey(QueuesDto, match.queue, defaultValue),
                     mode = getMapValueFromKey(MatchGameMode, match.mode, defaultValue),
                     type = getMapValueFromKey(MatchGameTypes, match.type, defaultValue),
-                    map_id = match.map_id,
+                    map = getMapValueFromKey(MapsDto, match.map_id, defaultValue),
                     season = getMapValueFromKey(SeasonDto, match.season, defaultValue),
                     duration = match.duration,
                     victory = isVictory(match, summoner),

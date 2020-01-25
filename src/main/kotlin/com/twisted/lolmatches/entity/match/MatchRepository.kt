@@ -12,10 +12,10 @@ interface MatchRepository : MongoRepository<MatchDocument, String> {
   @Query("{ game_id: ?0, region: '?1' }")
   fun findByIdAndRegion(gameId: Long, region: String): MatchDocument?
 
-  @Query("{ participantsIds: { \$in: [ObjectId(?0)] } }")
+  @Query("{ \"participants.summoner\": ObjectId(?0) } }")
   fun findSummonerMatches(id: String, pageable: Pageable): List<MatchDocument>
 
-  @CountQuery("{ participantsIds: { \$in: [ObjectId(?0)] } }")
+  @CountQuery("{ \"participants.summoner\": ObjectId(?0) } }")
   fun countTotalMatches(id: String): Int
 
   @ExistsQuery("{ game_id: ?0, region: '?1' }")

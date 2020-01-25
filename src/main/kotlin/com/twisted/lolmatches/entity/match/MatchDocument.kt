@@ -3,7 +3,6 @@ package com.twisted.lolmatches.entity.match
 import com.twisted.dto.match.IMatchDocument
 import com.twisted.dto.match.participant.MatchParticipant
 import com.twisted.dto.match.team.MatchTeam
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
@@ -25,7 +24,6 @@ data class MatchDocument(
         override val remake: Boolean,
         override val duration: Long,
         override val teams: List<MatchTeam>,
-        override val participantsIds: List<ObjectId>,
         override val participants: List<MatchParticipant>,
         override val framesInterval: Long,
         override val createdAt: Long = Date().time,

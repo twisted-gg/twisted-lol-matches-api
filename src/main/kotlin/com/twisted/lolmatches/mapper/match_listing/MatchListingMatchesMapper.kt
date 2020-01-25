@@ -8,8 +8,11 @@ import com.twisted.dto.match_listing.matches.teams.MatchListingTeamObject
 import com.twisted.dto.match_listing.matches.teams.MatchListingTeamParticipant
 import com.twisted.dto.summoner.SummonerDocument
 import com.twisted.lolmatches.entity.match.MatchDocument
+import com.twisted.lolmatches.summoners.SummonersService
 
-private fun getSummonerParticipantObject(match: MatchDocument, summoner: SummonerDocument) = match.participants.find { participant -> participant.summoner._id.toString() == summoner._id }
+private val summonerService = SummonersService()
+
+private fun getSummonerParticipantObject(match: MatchDocument, summoner: SummonerDocument) = match.participants.find { participant -> participant.summoner.toString() == summoner._id }
         ?: throw Exception("Summoner has not found")
 
 private fun getTeam(teamId: Int, match: MatchDocument) = match.teams.find { t -> t.teamId == teamId }
@@ -45,8 +48,9 @@ private fun parseTeams(match: MatchDocument): List<MatchListingTeamObject> {
   for (participant in match.participants) {
     val teamId = participant.teamId
     val currentTeam = response.find { r -> r.teamId == teamId }
+    val summonerName = summonerService.getSummonerName(participant.summoner)
     val summonerData = MatchListingTeamParticipant(
-            summonerName = participant.summoner.name,
+            summonerName = summonerName,
             champion = participant.championId
     )
     if (currentTeam != null) {

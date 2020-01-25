@@ -2,7 +2,9 @@ package com.twisted.lolmatches.match
 
 import com.twisted.dto.match_listing.MatchListing
 import com.twisted.lolmatches.dto.match.GetSummonerMatchesRequest
+import com.twisted.lolmatches.entity.match.MatchDocument
 import com.twisted.lolmatches.entity.match.MatchRepository
+import com.twisted.lolmatches.errors.NotFoundException
 import com.twisted.lolmatches.mapper.match_listing.mapMatchListing
 import com.twisted.lolmatches.summoners.SummonersService
 import org.springframework.data.domain.PageRequest
@@ -19,5 +21,9 @@ class MatchService(
     val matches = repository.findSummonerMatches(summonerId, PageRequest.of(query.page, query.limit))
     val total = repository.countTotalMatches(summonerId)
     return mapMatchListing(query, summoner, matches, total)
+  }
+
+  fun get(id: String): MatchDocument {
+    return repository.findMatch(id) ?: throw NotFoundException()
   }
 }

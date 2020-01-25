@@ -20,4 +20,7 @@ interface MatchRepository : MongoRepository<MatchDocument, String> {
 
   @ExistsQuery("{ game_id: ?0, region: '?1' }")
   fun existsByGameId(gameId: Long, region: String): Boolean
+
+  @Query("{ _id: ObjectId(?0) }")
+  fun findMatch(id: String): MatchDocument?
 }

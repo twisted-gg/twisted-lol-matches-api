@@ -21,6 +21,9 @@ class MatchController(
   @GetMapping("summoner/status")
   fun summonerStatus(params: GetSummonerRequest): Mono<MatchLoadingSummonerStatus> = Mono.just(loadingService.summonerStatus(params))
 
-  @GetMapping
+  @GetMapping("summoner")
   fun getSummonerMatches(param: GetSummonerMatchesRequest) = Mono.just(service.getMatches(param))
+
+  @GetMapping("{id}")
+  fun getMatch(@PathVariable("id") id: String) = Mono.just(service.get(id))
 }

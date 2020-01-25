@@ -7,10 +7,17 @@ import com.twisted.dto.match_listing.matches.summoner.MatchListingSummonerStats
 import com.twisted.dto.match_listing.matches.teams.MatchListingTeamObject
 import com.twisted.dto.match_listing.matches.teams.MatchListingTeamParticipant
 import com.twisted.dto.summoner.SummonerDocument
+import com.twisted.enum.common.QueuesDto
+import com.twisted.enum.common.SeasonDto
+import com.twisted.enum.getMapValueFromKey
+import com.twisted.enum.match.MatchGameMode
+import com.twisted.enum.match.MatchGameTypes
 import com.twisted.lolmatches.entity.match.MatchDocument
+import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 
 private val summonerService = SummonersService()
+private val api = RiotService().getApi()
 
 private fun getSummonerParticipantObject(match: MatchDocument, summoner: SummonerDocument) = match.participants.find { participant -> participant.summoner.toString() == summoner._id }
         ?: throw Exception("Summoner has not found")
@@ -69,16 +76,17 @@ private fun parseTeams(match: MatchDocument): List<MatchListingTeamObject> {
 
 fun mapperMatchListingMatches(summoner: SummonerDocument, matches: List<MatchDocument>): List<MatchListingObject> {
   val response = mutableListOf<MatchListingObject>()
+  val defaultValue = "NONE"
   for (match in matches) {
     response.add(
             MatchListingObject(
                     game_id = match.id,
                     remake = match.remake,
-                    queue = match.queue,
-                    mode = match.mode,
-                    type = match.type,
+                    queue = getMapValueFromKey(QueuesDto, match.queue, defaultValue),
+                    mode = getMapValueFromKey(MatchGameMode, match.mode, defaultValue),
+                    type = getMapValueFromKey(MatchGameTypes, match.type, defaultValue),
                     map_id = match.map_id,
-                    season = match.season,
+                    season = getMapValueFromKey(SeasonDto, match.season, defaultValue),
                     duration = match.duration,
                     victory = isVictory(match, summoner),
                     creation = match.creation,

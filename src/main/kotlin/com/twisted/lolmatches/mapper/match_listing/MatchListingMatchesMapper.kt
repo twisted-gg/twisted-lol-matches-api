@@ -1,6 +1,7 @@
 package com.twisted.lolmatches.mapper.match_listing
 
 import com.twisted.dto.match.participant.stats.MatchParticipantStats
+import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantPerks
 import com.twisted.dto.match_listing.matches.MatchListingObject
 import com.twisted.dto.match_listing.matches.summoner.MatchListingSummonerObject
 import com.twisted.dto.match_listing.matches.summoner.MatchListingSummonerStats
@@ -46,7 +47,10 @@ private fun parseSummoner(match: MatchDocument, summoner: SummonerDocument): Mat
           items = participant.items,
           stats = parseStats(participant.stats),
           spells = participant.spells,
-          perks = participant.perks,
+          perks = MatchDetailsTeamsParticipantPerks(
+                  main = participant.perks.first(),
+                  subStyle = participant.perkSubStyle
+          ),
           team = participant.teamId
   )
 }

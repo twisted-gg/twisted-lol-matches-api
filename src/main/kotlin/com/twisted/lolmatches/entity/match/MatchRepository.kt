@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface MatchRepository : MongoRepository<MatchDocument, String> {
-  @Query("{ game_id: ?0, region: '?1' }")
-  fun findByIdAndRegion(gameId: Long, region: String): MatchDocument?
-
   @Query("{ \"participants.summoner\": ObjectId(?0) } }")
   fun findSummonerMatches(id: String, pageable: Pageable): List<MatchDocument>
 

@@ -8,6 +8,7 @@ import com.twisted.lolmatches.mapper.match_details.matchDetailsMapper
 import com.twisted.lolmatches.mapper.match_listing.mapMatchListing
 import com.twisted.lolmatches.summoners.SummonersService
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,7 +19,8 @@ class MatchService(
   fun getMatches(query: GetSummonerMatchesRequest): MatchListing {
     val summoner = summonerService.getSummoner(query).get()
     val summonerId = summoner._id
-    val matches = repository.findSummonerMatches(summonerId, PageRequest.of(query.page, query.limit))
+    val sortBy = "creation"
+    val matches = repository.findSummonerMatches(summonerId, PageRequest.of(query.page, query.limit, Sort.by(Sort.Direction.DESC, sortBy)))
     val total = repository.countTotalMatches(summonerId)
     return mapMatchListing(query, summoner, matches, total)
   }

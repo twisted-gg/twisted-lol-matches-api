@@ -26,4 +26,7 @@ class MatchController(
 
   @GetMapping("{id}")
   fun getMatch(@PathVariable("id") id: String) = Mono.just(service.get(id))
+
+  @GetMapping("{id}/details")
+  fun getMatchDetails(@PathVariable("id") id: String) = Mono.just(service.getMatchDetails(id))
 }

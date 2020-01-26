@@ -26,7 +26,7 @@ private fun getSummonerParticipantObject(match: MatchDocument, summoner: Summone
 private fun getTeam(teamId: Int, match: MatchDocument) = match.teams.find { t -> t.teamId == teamId }
         ?: throw Exception("Team has not found")
 
-private fun isVictory(match: MatchDocument, summoner: SummonerDocument): Boolean {
+private fun isWin(match: MatchDocument, summoner: SummonerDocument): Boolean {
   val participantObject = getSummonerParticipantObject(match, summoner)
   val team = getTeam(participantObject.teamId, match)
   return team.win
@@ -89,7 +89,7 @@ fun mapperMatchListingMatches(summoner: SummonerDocument, matches: List<MatchDoc
                     map = getMapValueFromKey(MapsDto, match.map_id, defaultValue),
                     season = getMapValueFromKey(SeasonDto, match.season, defaultValue),
                     duration = match.duration,
-                    victory = isVictory(match, summoner),
+                    win = isWin(match, summoner),
                     creation = match.creation,
                     summoner = parseSummoner(match, summoner),
                     teams = parseTeams(match)

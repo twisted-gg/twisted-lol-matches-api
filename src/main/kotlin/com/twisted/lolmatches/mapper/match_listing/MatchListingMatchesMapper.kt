@@ -1,6 +1,8 @@
 package com.twisted.lolmatches.mapper.match_listing
 
+import com.twisted.dto.match.participant.MatchParticipant
 import com.twisted.dto.match.participant.stats.MatchParticipantStats
+import com.twisted.dto.match.team.MatchTeam
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantPerks
 import com.twisted.dto.match_listing.matches.MatchListingObject
 import com.twisted.dto.match_listing.matches.summoner.MatchListingSummonerObject
@@ -15,6 +17,7 @@ import com.twisted.enum.getMapValueFromKey
 import com.twisted.enum.match.MatchGameMode
 import com.twisted.enum.match.MatchGameTypes
 import com.twisted.lolmatches.entity.match.MatchDocument
+import com.twisted.lolmatches.errors.NotFoundException
 import com.twisted.lolmatches.riot.RiotService
 import com.twisted.lolmatches.summoners.SummonersService
 
@@ -33,19 +36,30 @@ private fun isWin(match: MatchDocument, summoner: SummonerDocument): Boolean {
   return team.win
 }
 
-private fun parseStats(stats: MatchParticipantStats) = MatchListingSummonerStats(
-        champLevel = stats.champLevel,
-        minionsKilled = stats.totalMinionsKilled,
-        wardsPlaced = stats.wardsPlaced
+private fun calculateKillsParticipation (team: MatchTeam, participant: MatchParticipant): Float {
+  val participantKills = participant.kda.kills
+  if (participantKills == 0) {
+    return 0f
+  }
+  return (participantKills / team.stats.championKills.toFloat()) * 100
+}
+
+private fun parseStats(team: MatchTeam, participant: MatchParticipant)
+= MatchListingSummonerStats(
+        champLevel = participant.stats.champLevel,
+        minionsKilled = participant.stats.totalMinionsKilled,
+        wardsPlaced = participant.stats.wardsPlaced,
+        killsParticipation = calculateKillsParticipation(team, participant)
 )
 
 private fun parseSummoner(match: MatchDocument, summoner: SummonerDocument): MatchListingSummonerObject {
   val participant = getSummonerParticipantObject(match, summoner)
+  val currentTeam = match.teams.find { r -> r.teamId == participant.teamId } ?: throw NotFoundException()
   return MatchListingSummonerObject(
           champion = participant.championId,
           kda = participant.kda,
           items = participant.items,
-          stats = parseStats(participant.stats),
+          stats = parseStats(currentTeam, participant),
           spells = participant.spells,
           perks = MatchDetailsTeamsParticipantPerks(
                   main = participant.perks.first(),

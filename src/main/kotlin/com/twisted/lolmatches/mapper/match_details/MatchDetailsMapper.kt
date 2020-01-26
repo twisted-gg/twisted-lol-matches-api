@@ -6,13 +6,14 @@ import com.twisted.dto.match_details.MatchDetails
 import com.twisted.dto.match_details.teams.MatchDetailsTeams
 import com.twisted.dto.match_details.teams.MatchDetailsTeamsStats
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipant
+import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantPerks
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantStats
 import com.twisted.lolmatches.entity.match.MatchDocument
 import com.twisted.lolmatches.summoners.SummonersService
 
 private val summonersService = SummonersService()
 
-private fun parsePerks(perks: List<Int>) = listOf(perks[0], perks[1])
+private fun parsePerks(perks: List<Int>) = perks.first()
 
 private fun parseTeamsParticipants(teamId: Int, participants: List<MatchParticipant>): List<MatchDetailsTeamsParticipant> {
   val response = mutableListOf<MatchDetailsTeamsParticipant>()
@@ -30,9 +31,10 @@ private fun parseTeamsParticipants(teamId: Int, participants: List<MatchParticip
                     champion = participant.championId,
                     spells = participant.spells,
                     items = participant.items,
-                    perks = parsePerks(participant.perks),
-                    perkPrimaryStyle = participant.perkPrimaryStyle,
-                    perkSubStyle = participant.perkSubStyle,
+                    perks = MatchDetailsTeamsParticipantPerks(
+                            main = parsePerks(participant.perks),
+                            subStyle = participant.perkSubStyle
+                    ),
                     kda = participant.kda,
                     stats = stats
             )

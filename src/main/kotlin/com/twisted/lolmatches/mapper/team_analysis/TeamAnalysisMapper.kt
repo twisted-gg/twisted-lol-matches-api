@@ -17,6 +17,6 @@ private fun getWinnerTeam(teams: List<MatchTeam>): Int {
 }
 
 fun teamAnalysisMapper(match: MatchDocument) = TeamAnalysis(
-        winTeam = getWinnerTeam(match.teams),
+        teamWinner = getWinnerTeam(match.teams),
         matchAnalysis = matchAnalysisMapper(match)
 )

@@ -6,6 +6,7 @@ import com.twisted.lolmatches.entity.match.MatchRepository
 import com.twisted.lolmatches.errors.NotFoundException
 import com.twisted.lolmatches.mapper.match_details.matchDetailsMapper
 import com.twisted.lolmatches.mapper.match_listing.mapMatchListing
+import com.twisted.lolmatches.mapper.team_analysis.teamAnalysisMapper
 import com.twisted.lolmatches.summoners.SummonersService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -28,4 +29,6 @@ class MatchService(
   fun get(id: String) = repository.findMatch(id) ?: throw NotFoundException()
 
   fun getMatchDetails(id: String) = matchDetailsMapper(get(id))
+
+  fun getTeamAnalysis(id: String) = teamAnalysisMapper(get(id))
 }

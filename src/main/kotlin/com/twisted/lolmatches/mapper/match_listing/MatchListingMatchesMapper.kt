@@ -1,7 +1,6 @@
 package com.twisted.lolmatches.mapper.match_listing
 
 import com.twisted.dto.match.participant.MatchParticipant
-import com.twisted.dto.match.participant.stats.MatchParticipantStats
 import com.twisted.dto.match.team.MatchTeam
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantPerks
 import com.twisted.dto.match_listing.matches.MatchListingObject
@@ -36,7 +35,7 @@ private fun isWin(match: MatchDocument, summoner: SummonerDocument): Boolean {
   return team.win
 }
 
-private fun calculateKillsParticipation (team: MatchTeam, participant: MatchParticipant): Float {
+private fun calculateKillsParticipation(team: MatchTeam, participant: MatchParticipant): Float {
   val participantKills = participant.kda.kills
   if (participantKills == 0) {
     return 0f
@@ -44,8 +43,7 @@ private fun calculateKillsParticipation (team: MatchTeam, participant: MatchPart
   return (participantKills / team.stats.championKills.toFloat()) * 100
 }
 
-private fun parseStats(team: MatchTeam, participant: MatchParticipant)
-= MatchListingSummonerStats(
+private fun parseStats(team: MatchTeam, participant: MatchParticipant) = MatchListingSummonerStats(
         champLevel = participant.stats.champLevel,
         minionsKilled = participant.stats.totalMinionsKilled,
         wardsPlaced = participant.stats.wardsPlaced,

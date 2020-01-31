@@ -32,6 +32,7 @@ fun parseTeamStats(match: MatchDocument, teamId: Int) = match.participants
 
 fun matchParticipantFramesMapper(match: MatchDocument) = match.teams.map { t ->
   MatchParticipantFrames(
+          framesInterval = match.framesInterval,
           teamId = t.teamId,
           participants = parseTeamStats(match, t.teamId)
   )

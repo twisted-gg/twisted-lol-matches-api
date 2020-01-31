@@ -1,6 +1,5 @@
 package com.twisted.lolmatches.mapper.team_analysis.team_frames
 
-import com.twisted.dto.team_analysis.team_frames.TeamFrames
 import com.twisted.dto.team_analysis.team_frames.TeamFramesTeam
 import com.twisted.dto.team_analysis.team_frames.TeamFramesTeamFrames
 import com.twisted.lolmatches.entity.match.MatchDocument
@@ -27,10 +26,4 @@ private fun getFramesFromTeam(teamId: Int, match: MatchDocument): TeamFramesTeam
   return response
 }
 
-private fun mapperTeams(match: MatchDocument) = match.teams.map { t -> getFramesFromTeam(t.teamId, match) }
-
-
-fun teamFramesMapper(match: MatchDocument) = TeamFrames(
-        teams = mapperTeams(match),
-        framesInterval = match.framesInterval
-)
+fun teamFramesMapper(match: MatchDocument) = match.teams.map { t -> getFramesFromTeam(t.teamId, match) }

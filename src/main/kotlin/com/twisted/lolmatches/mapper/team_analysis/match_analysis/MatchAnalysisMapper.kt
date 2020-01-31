@@ -1,14 +1,13 @@
 package com.twisted.lolmatches.mapper.team_analysis.match_analysis
 
-import com.twisted.dto.match.participant.MatchParticipant
-import com.twisted.dto.team_analysis.match_analysis.MatchAnalysis
-import com.twisted.dto.team_analysis.match_analysis.teams.MatchAnalysisTeams
-import com.twisted.dto.team_analysis.match_analysis.teams.MatchAnalysisTeamsParticipants
-import com.twisted.dto.team_analysis.match_analysis.teams.MatchAnalysisTeamsStats
-import com.twisted.dto.team_analysis.match_analysis.teams.plusAssign
+import com.twisted.dto.team_analysis.match_analysis.MatchAnalysisTeams
+import com.twisted.dto.team_analysis.match_analysis.MatchAnalysisTeamsParticipants
+import com.twisted.dto.team_analysis.match_analysis.MatchAnalysisTeamsStats
+import com.twisted.dto.team_analysis.match_analysis.plusAssign
 import com.twisted.lolmatches.entity.match.MatchDocument
 
-private fun getTeamMapper(participants: List<MatchParticipant>): List<MatchAnalysisTeams> {
+fun matchAnalysisMapper(match: MatchDocument): List<MatchAnalysisTeams> {
+  val participants = match.participants
   val response = mutableListOf<MatchAnalysisTeams>()
   for (participant in participants) {
     val stats = MatchAnalysisTeamsStats(
@@ -39,8 +38,3 @@ private fun getTeamMapper(participants: List<MatchParticipant>): List<MatchAnaly
   }
   return response
 }
-
-fun matchAnalysisMapper(match: MatchDocument) = MatchAnalysis(
-        teams = getTeamMapper(match.participants
-        )
-)

@@ -17,11 +17,7 @@ import com.twisted.enum.match.MatchGameMode
 import com.twisted.enum.match.MatchGameTypes
 import com.twisted.lolmatches.entity.match.MatchDocument
 import com.twisted.lolmatches.errors.NotFoundException
-import com.twisted.lolmatches.riot.RiotService
-import com.twisted.lolmatches.summoners.SummonersService
-
-private val summonerService = SummonersService()
-private val api = RiotService().getApi()
+import com.twisted.lolmatches.mapper.match_utils.getParticipantsNames
 
 private fun getSummonerParticipantObject(match: MatchDocument, summoner: SummonerDocument) = match.participants.find { participant -> participant.summoner.toString() == summoner._id }
         ?: throw Exception("Summoner has not found")
@@ -69,10 +65,12 @@ private fun parseSummoner(match: MatchDocument, summoner: SummonerDocument): Mat
 
 private fun parseTeams(match: MatchDocument): List<MatchListingTeamObject> {
   val response = mutableListOf<MatchListingTeamObject>()
+  val participantsNames = getParticipantsNames(match.participants)
   for (participant in match.participants) {
     val teamId = participant.teamId
     val currentTeam = response.find { r -> r.teamId == teamId }
-    val summonerName = summonerService.getSummonerName(participant.summoner)
+    val summonerName = (participantsNames.find { p -> p.id == participant.summoner.toString() }
+            ?: throw NotFoundException()).name
     val summonerData = MatchListingTeamParticipant(
             summonerName = summonerName,
             champion = participant.championId

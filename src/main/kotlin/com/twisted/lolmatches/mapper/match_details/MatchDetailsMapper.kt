@@ -9,6 +9,8 @@ import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticip
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantPerks
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipantStats
 import com.twisted.lolmatches.entity.match.MatchDocument
+import com.twisted.lolmatches.errors.NotFoundException
+import com.twisted.lolmatches.mapper.match_utils.getParticipantsNames
 import com.twisted.lolmatches.summoners.SummonersService
 
 private val summonersService = SummonersService()
@@ -18,8 +20,10 @@ private fun parsePerks(perks: List<Int>) = perks.first()
 private fun parseTeamsParticipants(teamId: Int, participants: List<MatchParticipant>): List<MatchDetailsTeamsParticipant> {
   val response = mutableListOf<MatchDetailsTeamsParticipant>()
   val filterParticipants = participants.filter { p -> p.teamId == teamId }
+  val participantsNames = getParticipantsNames(participants)
   for (participant in filterParticipants) {
-    val name = summonersService.getSummonerName(participant.summoner)
+    val name = (participantsNames.find { p -> p.id == participant.summoner.toString() }
+            ?: throw NotFoundException()).name
     val stats = MatchDetailsTeamsParticipantStats(
             damage = participant.stats.totalDamageDealtToChampions,
             wards = participant.stats.wardsPlaced,

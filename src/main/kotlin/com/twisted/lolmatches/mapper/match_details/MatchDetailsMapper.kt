@@ -3,6 +3,7 @@ package com.twisted.lolmatches.mapper.match_details
 import com.twisted.dto.match.participant.MatchParticipant
 import com.twisted.dto.match.team.MatchTeamStats
 import com.twisted.dto.match_details.MatchDetails
+import com.twisted.dto.match_details.MatchLeagueDetails
 import com.twisted.dto.match_details.teams.MatchDetailsTeams
 import com.twisted.dto.match_details.teams.MatchDetailsTeamsStats
 import com.twisted.dto.match_details.teams.participant.MatchDetailsTeamsParticipant
@@ -70,7 +71,14 @@ private fun parseTeams(match: MatchDocument): List<MatchDetailsTeams> {
   return response
 }
 
+private fun matchLeagueAverage(match: MatchDocument) = MatchLeagueDetails(
+        tier = match.league.tier,
+        rank = match.league.rank,
+        points = match.league.points
+)
+
 fun matchDetailsMapper(match: MatchDocument) = MatchDetails(
         duration = match.duration,
+        leagueAverage = matchLeagueAverage(match),
         teams = parseTeams(match)
 )

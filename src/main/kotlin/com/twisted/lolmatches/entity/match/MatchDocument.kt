@@ -1,5 +1,6 @@
 package com.twisted.lolmatches.entity.match
 
+import com.twisted.dto.league.MatchLeagueDocument
 import com.twisted.dto.match.IMatchDocument
 import com.twisted.dto.match.participant.MatchParticipant
 import com.twisted.dto.match.team.MatchTeam
@@ -24,6 +25,7 @@ data class MatchDocument(
         override val remake: Boolean,
         override val duration: Long,
         override val teams: List<MatchTeam>,
+        override val league: MatchLeagueDocument,
         override val participants: List<MatchParticipant>,
         override val framesInterval: Long,
         override val createdAt: Long = Date().time,

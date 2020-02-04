@@ -34,5 +34,8 @@ class MatchController(
   fun getMatchAnalysis(@PathVariable("id") id: String) = Mono.just(service.getTeamAnalysis(id))
 
   @GetMapping("{id}/frames")
-  fun getMatchGraph(@PathVariable("id") id: String) = Mono.just(service.getMatchFrames(id))
+  fun getMatchFrames(@PathVariable("id") id: String) = Mono.just(service.getMatchFrames(id))
+
+  @GetMapping("{id}/graph")
+  fun getTeamGraph(@PathVariable("id") id: String) = Mono.just(service.getTeamGraph(id))
 }

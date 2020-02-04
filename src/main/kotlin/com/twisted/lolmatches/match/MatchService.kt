@@ -8,6 +8,7 @@ import com.twisted.lolmatches.mapper.match_details.matchDetailsMapper
 import com.twisted.lolmatches.mapper.match_listing.mapMatchListing
 import com.twisted.lolmatches.mapper.match_participant_frames.matchParticipantFramesMapper
 import com.twisted.lolmatches.mapper.team_analysis.teamAnalysisMapper
+import com.twisted.lolmatches.mapper.team_graph.teamGraphMapper
 import com.twisted.lolmatches.summoners.SummonersService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -34,4 +35,6 @@ class MatchService(
   fun getTeamAnalysis(id: String) = teamAnalysisMapper(get(id))
 
   fun getMatchFrames(id: String) = matchParticipantFramesMapper(get(id))
+
+  fun getTeamGraph(id: String) = teamGraphMapper(get(id))
 }

@@ -20,14 +20,13 @@ class RiotService {
   }
 
   fun parseRegion(value: ListRegions): Platform {
-    var region: Platform
-    when (value) {
-      ListRegions.LA1 -> region = Platform.LAN
+    return when (value) {
+      ListRegions.LA1 -> Platform.LAN
+      ListRegions.EUW1 -> Platform.EUW
       else -> {
         throw Exception("Invalid region $value")
       }
     }
-    return region
   }
 
   fun getApi(): RiotApi {
